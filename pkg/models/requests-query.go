@@ -54,7 +54,7 @@ func FetchRequests(username, request, title, status string, ID int, User bool) [
 	var requests []types.Request
 	for result.Next() {
 		var req types.Request
-		err := result.Scan(&req.ID, &req.BookID, &req.Title, &req.Request, &req.Status, &req.User_status, &req.Date)
+		err := result.Scan(&req.ID, &req.Username, &req.BookID, &req.Title, &req.Request, &req.Status, &req.User_status, &req.Date)
 		if err != nil {
 			fmt.Printf("Error scanning database: %v", err)
 			return nil
@@ -72,8 +72,8 @@ func InsertRequest(req types.Request) error {
 	}
 	defer db.Close()
 
-	insertRequest := `INSERT INTO requests (BookID, Title, Request, Status, User_status, Date) VALUES (?, ?, ?, ?, ?, ?)`
-	_, err = db.Exec(insertRequest, req.BookID, req.Title, req.Request, req.Status, req.User_status, req.Date)
+	insertRequest := `INSERT INTO requests (BookID, Title, Request, Status, User_status,Username, Date) VALUES (?, ?, ?, ?, ?, ?,?)`
+	_, err = db.Exec(insertRequest, req.BookID, req.Title, req.Request, req.Status, req.User_status, req.Username, req.Date)
 	if err != nil {
 		fmt.Printf("Error inserting into database: %v", err)
 		return err
@@ -120,7 +120,7 @@ func ExecuteRequest(ID int) error {
 				if err != nil {
 					return err
 				}
-				err = InsertBorrowingHistory(types.BorrowingHistory{BookID: request.BookID, Title: request.Title, Username: request.Username, Borrowed_date: time.Now(), Returned_date: time.Time{}})
+				err = InsertBorrowingHistory(types.BorrowingHistory{BookID: request.BookID, Title: request.Title, Username: request.Username, Borrowed_date: time.Now().Format("Mon Jan _2 15:04:05 2006"), Returned_date: time.Time{}.Format("Mon Jan _2 15:04:05 2006")})
 			} else if request.Request == "checkin" {
 				err = UpdateBook(book.Quantity+1, request.BookID)
 				if err != nil {

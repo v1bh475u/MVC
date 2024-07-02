@@ -22,6 +22,7 @@ func StartApi() {
 
 	router.HandleFunc("/register", controller.RegisterPage).Methods("GET")
 	router.HandleFunc("/register", controller.Register).Methods("POST")
+	router.HandleFunc("/logout", controller.Logout).Methods("GET")
 
 	//Catalog routes
 
@@ -39,7 +40,7 @@ func StartApi() {
 	router.Handle("/checkin", controller.AuthMiddleware(BookRequest)).Methods("POST")
 
 	Messages := http.HandlerFunc(controller.Messages)
-	router.Handle("/messages", controller.AuthMiddleware(controller.AdminMiddleware(Messages))).Methods("GET")
+	router.Handle("/messages", controller.AuthMiddleware(Messages)).Methods("GET")
 
 	BorrowingHistory := http.HandlerFunc(controller.BorrowingHistory)
 	router.Handle("/borrowinghistory", controller.AuthMiddleware(BorrowingHistory)).Methods("GET")
@@ -49,7 +50,7 @@ func StartApi() {
 	Requests := http.HandlerFunc(controller.Requests)
 	router.Handle("/requests", controller.AuthMiddleware(controller.AdminMiddleware(Requests))).Methods("GET")
 	PostRequests := http.HandlerFunc(controller.PostRequests)
-	router.Handle("/requests", controller.AuthMiddleware(controller.AdminMiddleware(PostRequests))).Methods("POST")
+	router.Handle("/apply-changes", controller.AuthMiddleware(controller.AdminMiddleware(PostRequests))).Methods("POST")
 
 	BookManagement := http.HandlerFunc(controller.BookManagement)
 	router.Handle("/bookmanagement", controller.AuthMiddleware(controller.AdminMiddleware(BookManagement))).Methods("GET")

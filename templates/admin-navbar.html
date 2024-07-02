@@ -2,6 +2,45 @@
 <nav>
   <ul>
     <li><a href="/books">Catalog</a></li>
+    {{ if .Catalog }}
+    <li>
+      <form action="/books" method="post" id="search-bar">
+        <input type="text" name="title" placeholder="Search for books">
+        <button type="submit">Search</button>
+      </form>
+    </li>
+    <li>
+      <form action="/books" method="post" id="filter">
+        <label>Filter by:</label>
+        <select name="genre" id="genre-select">
+          <option value="">All Genres</option>
+          {{ if .Genres}}
+          {{ range .Genres }}
+          <option value="{{ . }}">
+            {{ . }}
+          </option>
+          {{ end }}
+          {{ end }}
+        </select>
+        <select name="author" id="author-select">
+          <option value="">All Authors</option>
+          {{ if .Authors }}
+          {{ range .Authors}}
+          <option value="{{ . }}">
+            {{ . }}
+          </option>
+          {{ end }}
+          {{ end }}
+        </select>
+        <select name="user_status">
+          <option value="">All Books</option>
+          <option value="borrowed">Borrowed</option>
+          <option value="requested">Requested</option>
+        </select>
+        <button type="submit">Filter</button>
+      </form>
+    </li>
+    {{end}}
     <li><a href="/book-management">Manage Books</a></li>
     <li><a href="/requests">Requests</a></li>
     <li><a href='/logout'>Logout</a></li>

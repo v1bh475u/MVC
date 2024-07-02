@@ -2,14 +2,9 @@
 <header>
   <nav>
     <ul>
+
       <li><a href="/books">Catalog</a></li>
-      <li>
-        <form method="POST" action="/reqAdmin" id="AdminPrivs">
-          <button type="submit">GetAdminPrivs</button>
-        </form>
-      </li>
-      <li><a href="/history">Borrowing History</a></li>
-      <li><a href="/messages" id="messages">Messages</a></li>
+      {{ if .Catalog }}
       <li>
         <form action="/books" method="post" id="search-bar">
           <input type="text" name="title" placeholder="Search for books">
@@ -21,18 +16,22 @@
           <label>Filter by:</label>
           <select name="genre" id="genre-select">
             <option value="">All Genres</option>
+            {{ if .Genres}}
             {{ range .Genres }}
-            <option value="{{ .Genre }}">
-              {{ .Genre}}
+            <option value="{{ . }}">
+              {{ . }}
             </option>
+            {{ end }}
             {{ end }}
           </select>
           <select name="author" id="author-select">
             <option value="">All Authors</option>
+            {{ if .Authors }}
             {{ range .Authors}}
-            <option value="{{ .Author }}">
-              {{ .Author }}
+            <option value="{{ . }}">
+              {{ . }}
             </option>
+            {{ end }}
             {{ end }}
           </select>
           <select name="user_status">
@@ -43,6 +42,14 @@
           <button type="submit">Filter</button>
         </form>
       </li>
+      {{end}}
+      <li>
+        <form method="POST" action="/reqAdmin" id="AdminPrivs">
+          <button type="submit">GetAdminPrivs</button>
+        </form>
+      </li>
+      <li><a href="/borrowinghistory">Borrowing History</a></li>
+      <li><a href="/messages" id="messages">Messages</a></li>
       <li><a href='/logout'>Logout</a></li>
     </ul>
   </nav>

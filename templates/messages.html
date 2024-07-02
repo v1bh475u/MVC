@@ -1,4 +1,5 @@
-<html lang="en">
+{{ define "messages" }}
+<!DOCTYPE html>
 
 <head>
   <title>Messages</title>
@@ -8,11 +9,11 @@
 
 <body>
   {{ template "user-navbar" . }}
-  {{ if .messages 0}}
+  {{ if .Messages }}
   <h1>No messages</h1>
   {{ else }}
   <div id="messages">
-    {{range .messages}}
+    {{range .Messages }}
     <div class="message">
       {{ if eq .Request "admin" }}
       <p>Your request for admin Privileges has been {{.Status}}!</p>
@@ -26,3 +27,5 @@
 </body>
 
 </html>
+
+{{ end }}

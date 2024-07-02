@@ -1,7 +1,5 @@
 package types
 
-import "time"
-
 type User struct {
 	ID       int
 	Username string
@@ -22,8 +20,8 @@ type BorrowingHistory struct {
 	BookID        int
 	Title         string
 	Username      string
-	Borrowed_date time.Time
-	Returned_date time.Time
+	Borrowed_date string
+	Returned_date string
 }
 
 type Request struct {
@@ -34,7 +32,7 @@ type Request struct {
 	Request     string
 	Status      string
 	User_status string
-	Date        time.Time
+	Date        string
 }
 
 type DisplayBook struct {
@@ -49,6 +47,7 @@ type BookCatalog struct {
 	Username string
 	Role     string
 	Messages int
+	Catalog  bool
 }
 
 type DetailedBook struct {
@@ -56,6 +55,7 @@ type DetailedBook struct {
 	Status           string
 	BorrowingHistory []BorrowingHistory
 	Role             string
+	Catalog          bool
 }
 
 type Message struct {
@@ -64,5 +64,9 @@ type Message struct {
 }
 
 type PageData struct {
-	Message string
+	Message          string
+	Messages         []Request
+	Books            []Book
+	BorrowingHistory []BorrowingHistory
+	Catalog          bool
 }

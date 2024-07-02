@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/v1bh475u/LibMan_MVC/pkg/models"
@@ -15,10 +16,12 @@ func Messages(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "/login", http.StatusSeeOther)
 		return
 	}
-	messages := models.FetchRequests(username, "", "", "", 0, true)
+	messages := models.FetchRequests(username, "", "", "approved", 0, true)
+	messages = append(messages, models.FetchRequests(username, "", "", "disapproved", 0, true)...)
+	fmt.Printf("Messages: %v\n", messages)
 	updateMessages(messages)
 	t := views.Messages()
-	t.Execute(w, messages)
+	t.ExecuteTemplate(w, "messages", types.PageData{Messages: messages, Catalog: false})
 }
 
 func updateMessages(messages []types.Request) {

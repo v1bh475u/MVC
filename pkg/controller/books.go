@@ -4,7 +4,9 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
+	"time"
 
+	"github.com/gorilla/mux"
 	"github.com/v1bh475u/LibMan_MVC/pkg/models"
 	"github.com/v1bh475u/LibMan_MVC/pkg/types"
 	"github.com/v1bh475u/LibMan_MVC/pkg/utils"
@@ -19,9 +21,8 @@ func GetBooks(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	BookCatalog := prepareBookCatalog(username, Books)
-	fmt.Printf("BookCatalog: %v\n", BookCatalog)
 	t := views.BookCatalog()
-	if err = t.Execute(w, BookCatalog); err != nil {
+	if err = t.ExecuteTemplate(w, "book-catalog", BookCatalog); err != nil {
 		fmt.Println("Error executing template: ", err)
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
 	}
@@ -39,11 +40,16 @@ func PostBooks(w http.ResponseWriter, r *http.Request) {
 	}
 	BookCatalog := prepareBookCatalog(username, books)
 	t := views.BookCatalog()
-	t.Execute(w, BookCatalog)
+	if err = t.ExecuteTemplate(w, "book-catalog", BookCatalog); err != nil {
+		fmt.Println("Error executing template: ", err)
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+	}
 }
 
 func GetBook(w http.ResponseWriter, r *http.Request) {
-	bookid, err := strconv.Atoi(r.URL.Query().Get("id"))
+	vars := mux.Vars(r)
+	bookid, err := strconv.Atoi(vars["id"])
+	fmt.Printf("Book ID: %d\n", bookid)
 	if err != nil {
 		http.Redirect(w, r, "/books", http.StatusSeeOther)
 		return
@@ -57,7 +63,14 @@ func GetBook(w http.ResponseWriter, r *http.Request) {
 	status := book_status(username, book.Title)
 	borrowinghistory := models.FetchBorrowingHistory("", book.Title)
 	t := views.BookDetails()
-	t.Execute(w, types.DetailedBook{Book: book, Status: status, BorrowingHistory: borrowinghistory, Role: role})
+	fmt.Printf("Role: %s\n", role)
+	fmt.Printf("Status: %s\n", status)
+	fmt.Printf("Borrowing History: %v\n", borrowinghistory)
+	fmt.Printf("Book: %v\n", book)
+	if err = t.ExecuteTemplate(w, "book-details", types.DetailedBook{Book: book, Status: status, BorrowingHistory: borrowinghistory, Role: role, Catalog: false}); err != nil {
+		fmt.Println("Error executing template: ", err)
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+	}
 }
 
 func book_status(username, title string) string {
@@ -66,6 +79,7 @@ func book_status(username, title string) string {
 		return "Borrowed"
 	}
 	requests := models.FetchRequests(username, "", title, "pending", 0, false)
+	fmt.Printf("Requests: %v\n", requests)
 	if len(requests) > 0 {
 		return "Requested"
 	}
@@ -74,7 +88,7 @@ func book_status(username, title string) string {
 
 func isBorrowed(borrowing_history []types.BorrowingHistory) bool {
 	for _, history := range borrowing_history {
-		if history.Returned_date.IsZero() {
+		if history.Returned_date == "Mon Jan  1 00:00:00 0001" {
 			return true
 		}
 	}
@@ -120,13 +134,13 @@ func BookRequest(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	}
-	request := types.Request{BookID: book.BookID, Title: book.Title, Request: action, Status: "pending", User_status: "unseen", Username: username}
+	request := types.Request{BookID: book.BookID, Title: book.Title, Request: action, Status: "pending", User_status: "unseen", Username: username, Date: time.Now().Format("Mon Jan _2 15:04:05 2006")}
 	err = models.InsertRequest(request)
 	if err != nil {
 		SysMessages(types.Message{Message: err.Error(), Type: "Error"}, w, r)
 		return
 	}
-	SysMessages(types.Message{Message: "Request submitted successfully", Type: "Success"}, w, r)
+	SysMessages(types.Message{Message: "Request submitted successfully", Type: "Info"}, w, r)
 }
 
 func prepareBookCatalog(username string, Books []types.Book) types.BookCatalog {
@@ -136,8 +150,10 @@ func prepareBookCatalog(username string, Books []types.Book) types.BookCatalog {
 	}
 	genres := models.FetchUniqueitems("Genre")
 	authors := models.FetchUniqueitems("Author")
-	messages := len(models.FetchRequests(username, "", "", "", 0, true))
+	messages := models.FetchRequests(username, "", "", "approved", 0, true)
+	messages = append(messages, models.FetchRequests(username, "", "", "disapproved", 0, true)...)
+	n_messages := len(messages)
 	user, _ := models.FetchUser(username)
 	role := user.Role
-	return types.BookCatalog{Books: BookList, Genres: genres, Authors: authors, Username: username, Role: role, Messages: messages}
+	return types.BookCatalog{Books: BookList, Genres: genres, Authors: authors, Username: username, Role: role, Messages: n_messages, Catalog: true}
 }

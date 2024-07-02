@@ -12,7 +12,7 @@ import (
 func BookManagement(w http.ResponseWriter, r *http.Request) {
 	books := models.FetchBooks("", "", "", 0)
 	t := views.BookManagement()
-	t.Execute(w, books)
+	t.ExecuteTemplate(w, "book-management", types.PageData{Books: books, Catalog: false})
 }
 
 func AddBook(w http.ResponseWriter, r *http.Request) {

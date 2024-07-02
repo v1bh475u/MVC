@@ -7,7 +7,7 @@
     ```bash
     go mod vendor
     go mod tidy
-    cp example.env .env
+    cp ./config/.env.example ./config/.env
     ```
 
 - __Database Setup__

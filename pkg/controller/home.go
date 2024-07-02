@@ -11,3 +11,12 @@ func Home(w http.ResponseWriter, r *http.Request) {
 	t := views.StartPage()
 	t.Execute(w, types.PageData{Message: ""})
 }
+
+func Logout(w http.ResponseWriter, r *http.Request) {
+	http.SetCookie(w, &http.Cookie{
+		Name:   "token",
+		Value:  "",
+		MaxAge: -1,
+	})
+	http.Redirect(w, r, "/", http.StatusSeeOther)
+}
