@@ -1,0 +1,28 @@
+<html lang="en">
+
+<head>
+  <title>Messages</title>
+  <link rel="stylesheet" type="text/css" href="/static/css/messages.css">
+  <link rel="icon" href="/static/img/icons/msg.png" type="image/png">
+</head>
+
+<body>
+  {{ template "user-navbar" . }}
+  {{ if .messages 0}}
+  <h1>No messages</h1>
+  {{ else }}
+  <div id="messages">
+    {{range .messages}}
+    <div class="message">
+      {{ if eq .Request "admin" }}
+      <p>Your request for admin Privileges has been {{.Status}}!</p>
+      {{else}}
+        <p>Your request for {{.Request}} of {{.Title}} has been {{.Status}}!</p>
+        {{end}}
+    </div>
+    {{end}}
+  </div>
+  {{end}}
+</body>
+
+</html>

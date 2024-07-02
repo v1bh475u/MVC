@@ -1,0 +1,38 @@
+<html lang="en">
+
+<head>
+  <title>Add Book</title>
+  <link rel="stylesheet" type="text/css" href="/static/css/Add-RemoveBook.css">
+  <link rel="icon" href="/static/img/icons/book.png" type="image/png">
+</head>
+
+<body>
+  {{ template "admin-navbar" . }}
+  <div>
+    <form action="/addbook" method="post" id="add">
+      <input type="text" name="title" id="title" required placeholder="Title">
+      <input type="text" name="author" id="author" required placeholder="Author">
+      <input type="text" name="genre" id="genre" required placeholder="Genre">
+      <input type="text" name="quantity" id="quantity" required placeholder="Quantity">
+      <button type="submit">Add Book</button>
+    </form>
+  </div>
+  <div>
+    <p> For Deleting a book, just write -Quantity in the Quantity input. This will add the quantity that you enter to the book quantity.</p>
+    <form action="/updatebook" method="post" id="update">
+      <select name="title" id="title" required>
+        <option value="" disabled selected>Select Book</option>
+        {{ range .books }}
+        <option value="{{ .Title }}">
+          {{ .Title }}:
+          {{ .Quantity }}
+        </option>
+        {{ end }}
+      </select>
+      <input type="text" name="quantity" id="quantity" required placeholder="Quantity to be Added">
+      <button type="submit">Update Book</button>
+    </form>
+  </div>
+</body>
+
+</html>

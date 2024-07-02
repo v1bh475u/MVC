@@ -1,0 +1,48 @@
+<html lang="en">
+
+<head>
+  <title>Book Catalog</title>
+  <link rel="stylesheet" type="text/css" href="/static/css/BookCatalog.css">
+  <link rel="icon" href="/static/img/icons/open-book.png" type="image/png">
+</head>
+
+<body>
+  {{if eq .Role "user" }}
+  {{ template "user-navbar" . }}
+  {{ if  gt .Messages 0 }}
+  <script>
+    var n_messages = "{{ .Messages }}";
+    alert('You have ' + String(n_messages) + ' new messages');
+    var messagelink = document.getElementById('messages');
+    messagelink.style.color = 'red';
+  </script>
+  {{ end }}
+  {{else}}
+    {{ template "admin-navbar" . }}
+    {{end}}
+    <h1>Book Catalog</h1>
+    <div id="books">
+      {{ range .Books}}
+      {{ if gt .Book.Quantity 0 }}
+      <div class="book">
+        <h2>
+          {{ .Book.Title }}
+        </h2>
+        <p>Author:
+          {{ .Book.Author }}
+        </p>
+        <p>Genre:
+          {{ .Book.Genre }}
+        </p>
+        <p>
+          {{ .Status }}
+        </p>
+        <button onclick=" viewBookDetails('{{ .Book.BookID }}')">View Details</button>
+      </div>
+      {{ end }}
+      {{ end }}
+    </div>
+</body>
+<script src="/static/js/book-catalog.js"></script>
+
+</html>

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login</title>
+  <link rel="stylesheet" href="/static/css/login.css">
+  <link rel="icon" href="/static/img/icons/book.png" type="image/png">
+</head>
+
+<body>
+  <div class="container">
+    <div class="form-container">
+      <form id="loginForm" method="post" action="/login">
+        <h2>Login</h2>
+        <div class="input-group">
+          <input type="username" id="username" name="username" required placeholder="Username">
+        </div>
+        <div class="input-group">
+          <input type="password" id="password" name="password" required placeholder="Password">
+        </div>
+        <button type="submit">Login</button>
+      </form>
+      {{ if .Message }}
+      <p class="message">{{.Message}} </p>
+      {{ end }}
+      <p class="message">Not registered? <a href="/register" id="showSignup">Create an account</a></p>
+    </div>
+
+  </div>
+
+</body>
+
+</html>

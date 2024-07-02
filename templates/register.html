@@ -1,0 +1,34 @@
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SignUp</title>
+  <link rel="stylesheet" href="/static/css/register.css">
+  <link rel="icon" href="/static/img/icons/book.png" type="image/x-icon">
+</head>
+
+<body>
+
+  <div class="form-container">
+
+    <form id="Register" action="/register" method="post">
+      <h2>Register</h2>
+      <div class="input-group">
+        <input type="text" id="signupUsername" name="username" required placeholder="username">
+      </div>
+      <div class="input-group">
+        <input type="password" id="signupPassword" name="password" required placeholder="Password">
+      </div>
+      <button type="submit">Register</button>
+      {{ if .Message }}
+      <p class="message">
+        {{ .Message }}
+      </p>
+      {{end}}
+      <p class="message">Already registered? <a href="/login" id="showLogin">Sign in</a></p>
+    </form>
+  </div>
+</body>
+
+</html>

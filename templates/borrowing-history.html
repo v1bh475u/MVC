@@ -1,0 +1,36 @@
+<head>
+  <title>Borrowing History</title>
+  <link rel="stylesheet" type="text/css" href="/static/css/History.css">
+  <link rel="icon" href="/static/img/icons/open-book.png" type="image/png">
+</head>
+
+<body>
+  {{ template "user-navbar" . }}
+  <div class="container">
+    <h1>Borrowing History</h1>
+    <table>
+      <tr>
+        <th>Book ID</th>
+        <th>Title</th>
+        <th>Borrowed Date</th>
+        <th>Returned Date</th>
+      </tr>
+      {{ range .BorrowingHistory}}
+      <tr>
+        <td>
+          {{ .BookID }}
+        </td>
+        <td>
+          {{ .Title }}
+        </td>
+        <td>
+          {{ .Borrowed_date}}
+        </td>
+        <td>
+          {{ .Returned_date }}
+        </td>
+      </tr>
+      {{ end }}
+    </table>
+  </div>
+</body>

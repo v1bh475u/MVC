@@ -1,0 +1,51 @@
+{{ define "user-navbar"}}
+<header>
+  <nav>
+    <ul>
+      <li><a href="/books">Catalog</a></li>
+      <li>
+        <form method="POST" action="/reqAdmin" id="AdminPrivs">
+          <button type="submit">GetAdminPrivs</button>
+        </form>
+      </li>
+      <li><a href="/history">Borrowing History</a></li>
+      <li><a href="/messages" id="messages">Messages</a></li>
+      <li>
+        <form action="/books" method="post" id="search-bar">
+          <input type="text" name="title" placeholder="Search for books">
+          <button type="submit">Search</button>
+        </form>
+      </li>
+      <li>
+        <form action="/books" method="post" id="filter">
+          <label>Filter by:</label>
+          <select name="genre" id="genre-select">
+            <option value="">All Genres</option>
+            {{ range .Genres }}
+            <option value="{{ .Genre }}">
+              {{ .Genre}}
+            </option>
+            {{ end }}
+          </select>
+          <select name="author" id="author-select">
+            <option value="">All Authors</option>
+            {{ range .Authors}}
+            <option value="{{ .Author }}">
+              {{ .Author }}
+            </option>
+            {{ end }}
+          </select>
+          <select name="user_status">
+            <option value="">All Books</option>
+            <option value="borrowed">Borrowed</option>
+            <option value="requested">Requested</option>
+          </select>
+          <button type="submit">Filter</button>
+        </form>
+      </li>
+      <li><a href='/logout'>Logout</a></li>
+    </ul>
+  </nav>
+</header>
+
+{{ end }}
