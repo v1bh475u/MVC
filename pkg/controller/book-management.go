@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"database/sql"
 	"net/http"
 	"strconv"
 
@@ -45,7 +46,8 @@ func UpdateBook(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	book := models.FetchBooks(title, "", "", 0)[0]
-	if !isQuantityValid(quantity, book.Quantity) {
+	n_requests := n_requestedbooks(book.BookID)
+	if !isQuantityValid(quantity, book.Quantity, n_requests) {
 		SysMessages(types.Message{Message: "Invalid quantity", Type: "Error"}, w, r)
 		return
 	}
@@ -57,6 +59,10 @@ func UpdateBook(w http.ResponseWriter, r *http.Request) {
 	SysMessages(types.Message{Message: "Book updated successfully", Type: "Info"}, w, r)
 }
 
-func isQuantityValid(quantity, curr_quantity int) bool {
-	return quantity+curr_quantity >= 0
+func isQuantityValid(quantity, curr_quantity, n_requests int) bool {
+	return quantity+curr_quantity-n_requests >= 0
+}
+
+func n_requestedbooks(BookID sql.NullInt64) int {
+	return len(models.FetchRequests("", "", "", "pending", BookID, false))
 }

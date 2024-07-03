@@ -1,5 +1,10 @@
 package types
 
+import (
+	"database/sql"
+	"time"
+)
+
 type User struct {
 	ID       int
 	Username string
@@ -8,31 +13,50 @@ type User struct {
 }
 
 type Book struct {
-	BookID   int
+	BookID   sql.NullInt64
 	Title    string
 	Author   string
 	Genre    string
 	Quantity int
 }
 
-type BorrowingHistory struct {
+type DBorrowingHistory struct {
 	ID            int
-	BookID        int
+	BookID        sql.NullInt64
 	Title         string
 	Username      string
 	Borrowed_date string
 	Returned_date string
 }
 
-type Request struct {
+type BorrowingHistory struct {
+	ID            int
+	BookID        sql.NullInt64
+	Title         string
+	Username      string
+	Borrowed_date time.Time
+	Returned_date time.Time
+}
+
+type DRequest struct {
 	ID          int
 	Username    string
-	BookID      int
+	BookID      sql.NullInt64
 	Title       string
 	Request     string
 	Status      string
 	User_status string
 	Date        string
+}
+type Request struct {
+	ID          int
+	Username    string
+	BookID      sql.NullInt64
+	Title       string
+	Request     string
+	Status      string
+	User_status string
+	Date        time.Time
 }
 
 type DisplayBook struct {
@@ -53,7 +77,7 @@ type BookCatalog struct {
 type DetailedBook struct {
 	Book             Book
 	Status           string
-	BorrowingHistory []BorrowingHistory
+	BorrowingHistory []DBorrowingHistory
 	Role             string
 	Catalog          bool
 }
@@ -65,8 +89,8 @@ type Message struct {
 
 type PageData struct {
 	Message          string
-	Messages         []Request
+	Messages         []DRequest
 	Books            []Book
-	BorrowingHistory []BorrowingHistory
+	BorrowingHistory []DBorrowingHistory
 	Catalog          bool
 }

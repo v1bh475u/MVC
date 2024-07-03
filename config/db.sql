@@ -25,7 +25,7 @@ CREATE TABLE `requests`(
     `Request` ENUM('checkout','checkin','adminPrivs') NOT NULL,
     `Status` ENUM('pending','approved','disapproved') NOT NULL,
     `User_status` ENUM('seen','unseen','pending') NOT NULL,
-    `Date` DATE NOT NULL
+    `Date` Date NOT NULL
 );
 
 

@@ -1,6 +1,7 @@
 package models
 
 import (
+	"database/sql"
 	"fmt"
 	"strings"
 	"time"
@@ -8,7 +9,8 @@ import (
 	"github.com/v1bh475u/LibMan_MVC/pkg/types"
 )
 
-func FetchRequests(username, request, title, status string, ID int, User bool) []types.Request {
+func FetchRequests(username, request, title, status string, ID sql.NullInt64, User bool) []types.DRequest {
+	fmt.Println("Fetching requests")
 	db, err := connection()
 	if err != nil {
 		fmt.Printf("Error connecting to database: %v", err)
@@ -19,7 +21,7 @@ func FetchRequests(username, request, title, status string, ID int, User bool) [
 	query := `SELECT * FROM requests`
 	conditions := []string{}
 	params := []interface{}{}
-	if ID != 0 {
+	if ID.Valid && ID.Int64 != 0 {
 		conditions = append(conditions, `ID = ?`)
 		params = append(params, ID)
 	}
@@ -51,29 +53,82 @@ func FetchRequests(username, request, title, status string, ID int, User bool) [
 		fmt.Printf("Error querying database: %v", err)
 		return nil
 	}
-	var requests []types.Request
+	var requests []types.DRequest
 	for result.Next() {
-		var req types.Request
-		err := result.Scan(&req.ID, &req.Username, &req.BookID, &req.Title, &req.Request, &req.Status, &req.User_status, &req.Date)
+		var req types.DRequest
+		var dateBytes []byte
+		var title sql.NullString
+		err := result.Scan(&req.ID, &req.Username, &req.BookID, &title, &req.Request, &req.Status, &req.User_status, &dateBytes)
 		if err != nil {
 			fmt.Printf("Error scanning database: %v", err)
 			return nil
 		}
+		req.Title = title.String
+		date, err := time.Parse("2006-01-02", string(dateBytes))
+		if err != nil {
+			fmt.Printf("Error parsing date: %v", err)
+			return nil
+		}
+		req.Date = date.Format("Mon Jan _2 15:04:05 2006")
 		requests = append(requests, req)
 	}
 	return requests
 }
 
 func InsertRequest(req types.Request) error {
+	fmt.Println("Inserting request")
 	db, err := connection()
 	if err != nil {
 		fmt.Printf("Error connecting to database: %v", err)
 		return err
 	}
 	defer db.Close()
-
-	insertRequest := `INSERT INTO requests (BookID, Title, Request, Status, User_status,Username, Date) VALUES (?, ?, ?, ?, ?, ?,?)`
-	_, err = db.Exec(insertRequest, req.BookID, req.Title, req.Request, req.Status, req.User_status, req.Username, req.Date)
+	conditions := []string{}
+	params := []interface{}{}
+	insertRequest := `INSERT INTO requests`
+	if req.BookID.Valid && req.BookID.Int64 != 0 {
+		conditions = append(conditions, `BookID`)
+		params = append(params, req.BookID)
+	}
+	if req.Title != "" {
+		conditions = append(conditions, `Title`)
+		params = append(params, req.Title)
+	}
+	if req.Request != "" {
+		conditions = append(conditions, `Request`)
+		params = append(params, req.Request)
+	}
+	if req.Status != "" {
+		conditions = append(conditions, `Status`)
+		params = append(params, req.Status)
+	}
+	if req.User_status != "" {
+		conditions = append(conditions, `User_status`)
+		params = append(params, req.User_status)
+	}
+	if req.Username != "" {
+		conditions = append(conditions, `Username`)
+		params = append(params, req.Username)
+	}
+	if !req.Date.IsZero() {
+		conditions = append(conditions, `Date`)
+		params = append(params, req.Date)
+	}
+	if len(conditions) > 0 {
+		insertRequest += ` (` + strings.Join(conditions, `,`) + `)`
+	}
+	insertRequest += ` VALUES`
+	if len(conditions) > 0 {
+		insertRequest += ` (`
+		for i := 0; i < len(conditions); i++ {
+			insertRequest += `?`
+			if i < len(conditions)-1 {
+				insertRequest += `,`
+			}
+		}
+		insertRequest += `)`
+	}
+	_, err = db.Exec(insertRequest, params...)
 	if err != nil {
 		fmt.Printf("Error inserting into database: %v", err)
 		return err
@@ -82,15 +137,26 @@ func InsertRequest(req types.Request) error {
 }
 
 func UpdateRequest(Status, User_status string, ID int) error {
+	fmt.Println("Updating request")
 	db, err := connection()
 	if err != nil {
 		fmt.Printf("Error connecting to database: %v", err)
 		return err
 	}
 	defer db.Close()
-
-	updateRequest := `UPDATE requests SET Status = ?, User_status = ? WHERE ID = ?`
-	_, err = db.Exec(updateRequest, Status, User_status, ID)
+	conditions := []string{}
+	params := []interface{}{}
+	if Status != "" {
+		conditions = append(conditions, `Status = ?`)
+		params = append(params, Status)
+	}
+	if User_status != "" {
+		conditions = append(conditions, `User_status = ?`)
+		params = append(params, User_status)
+	}
+	params = append(params, ID)
+	updateRequest := `UPDATE requests SET ` + strings.Join(conditions, `,`) + ` WHERE ID = ?`
+	_, err = db.Exec(updateRequest, params...)
 	if err != nil {
 		fmt.Printf("Error updating database: %v", err)
 		return err
@@ -98,7 +164,8 @@ func UpdateRequest(Status, User_status string, ID int) error {
 	return nil
 }
 
-func ExecuteRequest(ID int) error {
+func ExecuteRequest(ID sql.NullInt64) error {
+	fmt.Println("Executing request")
 	db, err := connection()
 	if err != nil {
 		fmt.Printf("Error connecting to database: %v", err)
@@ -107,7 +174,7 @@ func ExecuteRequest(ID int) error {
 	defer db.Close()
 
 	request := FetchRequests("", "", "", "", ID, false)[0]
-	if request.Status != "disapproved" {
+	if request.Status == "disapproved" {
 		return nil
 	}
 	if request.Status == "approved" {
@@ -120,13 +187,13 @@ func ExecuteRequest(ID int) error {
 				if err != nil {
 					return err
 				}
-				err = InsertBorrowingHistory(types.BorrowingHistory{BookID: request.BookID, Title: request.Title, Username: request.Username, Borrowed_date: time.Now().Format("Mon Jan _2 15:04:05 2006"), Returned_date: time.Time{}.Format("Mon Jan _2 15:04:05 2006")})
+				err = InsertBorrowingHistory(types.BorrowingHistory{BookID: request.BookID, Title: request.Title, Username: request.Username, Borrowed_date: time.Now()})
 			} else if request.Request == "checkin" {
 				err = UpdateBook(book.Quantity+1, request.BookID)
 				if err != nil {
 					return err
 				}
-				err = UpdateBorrowingHistory(request.BookID, time.Now().String())
+				err = UpdateBorrowingHistory(request.BookID, time.Now(), request.Username)
 			}
 		}
 		return err

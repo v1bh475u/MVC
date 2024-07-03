@@ -1,10 +1,12 @@
 {{define "book-details"}}
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Book Details</title>
-  <link rel="stylesheet" type="text/css" href="/static/css/book-details.css">
+  <link rel="stylesheet" href="/static/css/book-details.css">
   <link rel="icon" href="/static/img/icons/book.png" type="image/png">
 </head>
 
@@ -14,58 +16,59 @@
   {{ else }}
   {{ template "admin-navbar" . }}
   {{ end }}
-  <h1>
-    {{ .Book.Title }}
-  </h1>
-  <p>Author:
-    {{ .Book.Author }}
-  </p>
-  <p>Genre:
-    {{ .Book.Genre }}
-  </p>
-  <p>Quantity Available:
-    {{ .Book.Quantity}}
-  </p>
-  {{ if eq .Role "user" }}
-  {{ if eq .Status "Available" }}
-  <form action="/checkout" method="POST">
-    <input type="hidden" name="bookId" value="{{ .Book.BookID}}">
-    <input type="hidden" name="action" value="checkout">
-    <button type="submit">Checkout</button>
-  </form>
-  {{ else}}
-  {{ if eq .Status "Borrowed" }}
-  <form action="/checkin" method="POST">
-    <input type="hidden" name="bookId" value="{{ .Book.BookID}}" hidden>
-    <input type="hidden" name="action" value="checkin" hidden>
-    <button type="submit">Checkin</button>
-  </form>
-  {{ else }}
-  {{ if eq .Status "Requested" }}
-  <p> Already Requested</p>
-  {{ end }}
-  {{ end }}
-  {{ end }}
-  {{ end }}
-
-  <h2>Borrowing History</h2>
-  <div id="history">
-    {{ range .BorrowingHistory }}
-    <div>
-      <p>Borrowed by
-        {{ .Username }}
-      </p>
-      <p>Borrowed on
-        {{ .Borrowed_date }}
-      </p>
-      {{ if .Returned_date }}
-      <p>Returned on
-        {{ .Returned_date }}
-      </p>
+  <main class="main-content">
+    <h1 class="book-title">
+      {{ .Book.Title }}
+    </h1>
+    <p class="book-author">Author:
+      {{ .Book.Author }}
+    </p>
+    <p class="book-genre">Genre:
+      {{ .Book.Genre }}
+    </p>
+    <p class="book-quantity">Quantity Available:
+      {{ .Book.Quantity }}
+    </p>
+    {{ if eq .Role "user" }}
+    {{ if eq .Status "Available" }}
+    <form action="/checkout" method="POST" class="book-form">
+      <input type="hidden" name="bookId" value="{{ .Book.BookID.Int64 }}">
+      <input type="hidden" name="action" value="checkout">
+      <button type="submit" class="btn">Checkout</button>
+    </form>
+    {{ else }}
+    {{ if eq .Status "Borrowed" }}
+    <form action="/checkin" method="POST" class="book-form">
+      <input type="hidden" name="bookId" value="{{ .Book.BookID.Int64 }}">
+      <input type="hidden" name="action" value="checkin">
+      <button type="submit" class="btn">Checkin</button>
+    </form>
+    {{ else }}
+    {{ if eq .Status "Requested" }}
+    <p class="status-message">Already Requested</p>
+    {{ end }}
+    {{ end }}
+    {{ end }}
+    {{ end }}
+    <h2 class="history-title">Borrowing History</h2>
+    <div id="history" class="history-container">
+      {{ range .BorrowingHistory }}
+      <div class="history-entry">
+        <p class="history-username">Borrowed by
+          {{ .Username }}
+        </p>
+        <p class="history-date">Borrowed on
+          {{ .Borrowed_date }}
+        </p>
+        {{ if .Returned_date }}
+        <p class="history-date">Returned on
+          {{ .Returned_date }}
+        </p>
+        {{ end }}
+      </div>
       {{ end }}
     </div>
-    {{ end }}
-  </div>
+  </main>
 </body>
 
 </html>

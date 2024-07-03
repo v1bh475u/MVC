@@ -1,0 +1,209 @@
+:root {
+    --background-color: #121212;
+    --text-color: #e0e0e0;
+    --primary-color: #bb86fc;
+    --secondary-color: #03dac6;
+    --font-family: 'Arial', sans-serif;
+}
+
+body {
+    margin: 0;
+    font-family: var(--font-family);
+    background-color: var(--background-color);
+    color: var(--text-color);
+}
+
+header {
+    position: fixed;
+    top: 0;
+    background-color: #1e1e1e;
+    padding: 1rem 2rem;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.3);
+    width: 100%;
+}
+
+nav ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+nav ul li {
+    margin-right: 1rem;
+}
+
+nav ul li a {
+    text-decoration: none;
+    color: var(--primary-color);
+    padding: 0.5rem 1rem;
+    transition: color 0.3s ease;
+}
+
+nav ul li a:hover {
+    color: var(--secondary-color);
+}
+
+form {
+    display: flex;
+    align-items: center;
+}
+
+form label {
+    color: var(--primary-color);
+    margin-right: 0.5rem;
+}
+
+form select,
+form input[type="text"] {
+    padding: 0.5rem;
+    border: 1px solid #444;
+    background-color: #333;
+    color: var(--text-color);
+    border-radius: 0.3rem;
+}
+
+form button {
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    color: var(--background-color);
+    background-color: var(--primary-color);
+    border: none;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+form button:hover {
+    background-color: var(--secondary-color);
+}
+
+.hamburger {
+
+    display: none;
+
+    position: absolute;
+
+    top: 1rem;
+
+    right: 1rem;
+
+    padding: 0.5rem;
+
+    background-color: transparent;
+
+    border: none;
+
+    cursor: pointer;
+
+}
+
+
+.hamburger span {
+
+    display: block;
+
+    width: 20px;
+
+    height: 2px;
+
+    background-color: var(--primary-color);
+
+    margin-bottom: 4px;
+
+    transition: transform 0.3s ease;
+
+}
+
+
+.hamburger span:last-child {
+
+    margin-bottom: 0;
+
+}
+
+
+/* Add styles for the navigation menu wrapper */
+
+.nav-wrapper {
+
+    display: none;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+}
+
+
+/* Media query for small screens */
+
+@media only screen and (max-width: 768px) {
+    header {
+        display: none;
+    }
+
+    .nav-wrapper {
+
+        display: flex;
+
+    }
+
+
+    .hamburger {
+
+        display: block;
+
+    }
+
+
+    /* Style the navigation menu when the hamburger menu is active */
+
+    .nav-wrapper.active {
+
+        display: block;
+
+        position: absolute;
+
+        top: 0;
+
+        left: 0;
+
+        width: 100%;
+
+        height: 100vh;
+
+        background-color: var(--background-color);
+
+        padding: 1rem;
+
+        z-index: 1;
+
+    }
+
+
+    .nav-wrapper.active ul {
+
+        flex-direction: column;
+
+        align-items: center;
+
+    }
+
+
+    .nav-wrapper.active li {
+
+        margin-bottom: 1rem;
+
+    }
+
+
+    .nav-wrapper.active a {
+
+        font-size: 1.5rem;
+
+    }
+
+}

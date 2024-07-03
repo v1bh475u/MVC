@@ -1,8 +1,10 @@
 package controller
 
 import (
-	"encoding/json"
+	"database/sql"
+	"fmt"
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/v1bh475u/LibMan_MVC/pkg/models"
@@ -12,29 +14,39 @@ import (
 )
 
 func Requests(w http.ResponseWriter, r *http.Request) {
-	Requests := models.FetchRequests("", "", "", "pending", 0, false)
+	Requests := models.FetchRequests("", "", "", "pending", sql.NullInt64{}, false)
 	t := views.Requests()
 	t.ExecuteTemplate(w, "requests", types.PageData{Messages: Requests, Catalog: false})
 }
 
 func PostRequests(w http.ResponseWriter, r *http.Request) {
-	var body map[int]string
-	err := json.NewDecoder(r.Body).Decode(&body)
-	if err != nil {
-		SysMessages(types.Message{Message: "Invalid request", Type: "Error"}, w, r)
+	if err := r.ParseForm(); err != nil {
+		SysMessages(types.Message{Message: "Error parsing form", Type: "Error"}, w, r)
 		return
 	}
-	for key, value := range body {
-		if value == "approved" {
-			err = models.ExecuteRequest(key)
-		}
+	body := make(map[int]string)
+	for key, value := range r.PostForm {
+		fmt.Printf("key: %v, value: %v\n", key, value)
+		k, err := strconv.Atoi(key)
 		if err != nil {
-			SysMessages(types.Message{Message: "Error executing request", Type: "Error"}, w, r)
+			SysMessages(types.Message{Message: "Error converting key to int", Type: "Error"}, w, r)
 			return
 		}
+		body[k] = value[0]
+	}
+	var err error
+	for key, value := range body {
 		err = models.UpdateRequest(value, "unseen", key)
 		if err != nil {
 			SysMessages(types.Message{Message: "Error updating request", Type: "Error"}, w, r)
+			return
+		}
+		if value == "approved" {
+			k := sql.NullInt64{Int64: int64(key), Valid: true}
+			err = models.ExecuteRequest(k)
+		}
+		if err != nil {
+			SysMessages(types.Message{Message: "Error executing request", Type: "Error"}, w, r)
 			return
 		}
 	}
@@ -47,12 +59,12 @@ func AdminRequest(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "/login", http.StatusSeeOther)
 		return
 	}
-	Requests := models.FetchRequests(username, "adminPrivs", "", "pending", 0, false)
+	Requests := models.FetchRequests(username, "adminPrivs", "", "pending", sql.NullInt64{}, false)
 	if isRequested(Requests) {
 		SysMessages(types.Message{Message: "You have already requested for admin privileges", Type: "Warning"}, w, r)
 		return
 	}
-	request := types.Request{Request: "adminPrivs", Status: "pending", User_status: "unseen", Username: username, Date: time.Now().Format("Mon Jan _2 15:04:05 2006")}
+	request := types.Request{Request: "adminPrivs", Status: "pending", User_status: "unseen", Username: username, Date: time.Now()}
 	err = models.InsertRequest(request)
 	if err != nil {
 		SysMessages(types.Message{Message: "Error submitting request", Type: "Error"}, w, r)

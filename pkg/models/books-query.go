@@ -1,6 +1,7 @@
 package models
 
 import (
+	"database/sql"
 	"fmt"
 	"strings"
 
@@ -8,6 +9,7 @@ import (
 )
 
 func FetchBooks(title, author, genre string, ID int) []types.Book {
+	fmt.Println("Fetching books")
 	db, err := connection()
 	if err != nil {
 		fmt.Printf("Error connecting to database: %v", err)
@@ -23,8 +25,8 @@ func FetchBooks(title, author, genre string, ID int) []types.Book {
 		params = append(params, ID)
 	}
 	if title != "" {
-		conditions = append(conditions, `Title LIKE %?%`)
-		params = append(params, title)
+		conditions = append(conditions, `Title LIKE ?`)
+		params = append(params, "%"+title+"%")
 	}
 	if author != "" {
 		conditions = append(conditions, `Author = ?`)
@@ -55,7 +57,8 @@ func FetchBooks(title, author, genre string, ID int) []types.Book {
 	return books
 }
 
-func UpdateBook(Quantity, ID int) error {
+func UpdateBook(Quantity int, ID sql.NullInt64) error {
+	fmt.Println("Updating book")
 	db, err := connection()
 	if err != nil {
 		fmt.Printf("Error connecting to database: %v", err)
@@ -73,6 +76,7 @@ func UpdateBook(Quantity, ID int) error {
 }
 
 func InsertBook(book types.Book) error {
+	fmt.Println("Inserting book")
 	db, err := connection()
 	if err != nil {
 		fmt.Printf("Error connecting to database: %v", err)
@@ -90,6 +94,7 @@ func InsertBook(book types.Book) error {
 }
 
 func FetchUniqueitems(property string) []string {
+	fmt.Println("Fetching unique items")
 	db, err := connection()
 	if err != nil {
 		fmt.Printf("Error connecting to database: %v", err)

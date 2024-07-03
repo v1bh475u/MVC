@@ -1,7 +1,7 @@
 package controller
 
 import (
-	"fmt"
+	"database/sql"
 	"net/http"
 
 	"github.com/v1bh475u/LibMan_MVC/pkg/models"
@@ -16,15 +16,14 @@ func Messages(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "/login", http.StatusSeeOther)
 		return
 	}
-	messages := models.FetchRequests(username, "", "", "approved", 0, true)
-	messages = append(messages, models.FetchRequests(username, "", "", "disapproved", 0, true)...)
-	fmt.Printf("Messages: %v\n", messages)
+	messages := models.FetchRequests(username, "", "", "approved", sql.NullInt64{}, true)
+	messages = append(messages, models.FetchRequests(username, "", "", "disapproved", sql.NullInt64{}, true)...)
 	updateMessages(messages)
 	t := views.Messages()
 	t.ExecuteTemplate(w, "messages", types.PageData{Messages: messages, Catalog: false})
 }
 
-func updateMessages(messages []types.Request) {
+func updateMessages(messages []types.DRequest) {
 	for _, message := range messages {
 		models.UpdateRequest("", "seen", message.ID)
 	}

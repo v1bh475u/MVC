@@ -1,7 +1,10 @@
 {{ define "messages" }}
 <!DOCTYPE html>
+<html lang="en">
 
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Messages</title>
   <link rel="stylesheet" type="text/css" href="/static/css/messages.css">
   <link rel="icon" href="/static/img/icons/msg.png" type="image/png">
@@ -9,10 +12,8 @@
 
 <body>
   {{ template "user-navbar" . }}
-  {{ if .Messages }}
-  <h1>No messages</h1>
-  {{ else }}
   <div id="messages">
+    {{ if .Messages }}
     {{range .Messages }}
     <div class="message">
       {{ if eq .Request "admin" }}
@@ -22,8 +23,10 @@
         {{end}}
     </div>
     {{end}}
+    {{ else }}
+    <h1>No messages</h1>
+    {{end}}
   </div>
-  {{end}}
 </body>
 
 </html>

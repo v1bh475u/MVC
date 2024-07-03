@@ -1,15 +1,18 @@
 {{ define "book-management"}}
 <!DOCTYPE html>
+<html lang="en">
 
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Add Book</title>
-  <link rel="stylesheet" type="text/css" href="/static/css/Add-RemoveBook.css">
+  <link rel="stylesheet" type="text/css" href="/static/css/book-management.css">
   <link rel="icon" href="/static/img/icons/book.png" type="image/png">
 </head>
 
 <body>
   {{ template "admin-navbar" . }}
-  <div>
+  <div class="container">
     <form action="/addbook" method="post" id="add">
       <input type="text" name="title" id="title" required placeholder="Title">
       <input type="text" name="author" id="author" required placeholder="Author">
@@ -18,19 +21,19 @@
       <button type="submit">Add Book</button>
     </form>
   </div>
-  <div>
-    <p> For Deleting a book, just write -Quantity in the Quantity input. This will add the quantity that you enter to the book quantity.</p>
+  <div class="container">
+    <p>For Deleting a book, just write -Quantity in the Quantity input. This will subtract the quantity that you enter from the book quantity.</p>
     <form action="/updatebook" method="post" id="update">
       <select name="title" id="title" required>
         <option value="" disabled selected>Select Book</option>
-        {{ range .books }}
+        {{ range .Books }}
         <option value="{{ .Title }}">
           {{ .Title }}:
           {{ .Quantity }}
         </option>
         {{ end }}
       </select>
-      <input type="text" name="quantity" id="quantity" required placeholder="Quantity to be Added">
+      <input type="text" name="quantity" id="quantity" required placeholder="Quantity to be Added or Removed">
       <button type="submit">Update Book</button>
     </form>
   </div>

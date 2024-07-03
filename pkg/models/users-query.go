@@ -7,6 +7,7 @@ import (
 )
 
 func FetchUser(username string) (types.User, error) {
+	fmt.Println("Fetching user")
 	db, err := connection()
 	if err != nil {
 		fmt.Printf("Error connecting to database: %v", err)
@@ -32,6 +33,7 @@ func FetchUser(username string) (types.User, error) {
 }
 
 func InsertUser(user types.User) error {
+	fmt.Println("Inserting user")
 	db, err := connection()
 	if err != nil {
 		fmt.Printf("Error connecting to database: %v", err)
@@ -49,6 +51,7 @@ func InsertUser(user types.User) error {
 }
 
 func update_user(username, role string) error {
+	fmt.Println("Updating user")
 	db, err := connection()
 	if err != nil {
 		fmt.Printf("Error connecting to database: %v", err)

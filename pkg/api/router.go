@@ -45,6 +45,9 @@ func StartApi() {
 	BorrowingHistory := http.HandlerFunc(controller.BorrowingHistory)
 	router.Handle("/borrowinghistory", controller.AuthMiddleware(BorrowingHistory)).Methods("GET")
 
+	AdminReq := http.HandlerFunc(controller.AdminRequest)
+	router.Handle("/reqAdmin", controller.AuthMiddleware(AdminReq)).Methods("POST")
+
 	//Admin routes
 
 	Requests := http.HandlerFunc(controller.Requests)
@@ -53,7 +56,7 @@ func StartApi() {
 	router.Handle("/apply-changes", controller.AuthMiddleware(controller.AdminMiddleware(PostRequests))).Methods("POST")
 
 	BookManagement := http.HandlerFunc(controller.BookManagement)
-	router.Handle("/bookmanagement", controller.AuthMiddleware(controller.AdminMiddleware(BookManagement))).Methods("GET")
+	router.Handle("/book-management", controller.AuthMiddleware(controller.AdminMiddleware(BookManagement))).Methods("GET")
 	AddBook := http.HandlerFunc(controller.AddBook)
 	router.Handle("/addbook", controller.AuthMiddleware(controller.AdminMiddleware(AddBook))).Methods("POST")
 	UpdateBook := http.HandlerFunc(controller.UpdateBook)

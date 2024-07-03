@@ -1,14 +1,17 @@
 {{ define "book-catalog" }}
 <!DOCTYPE html>
+<html lang="en">
 
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Book Catalog</title>
-  <link rel="stylesheet" type="text/css" href="/static/css/book-catalog.css">
+  <link rel="stylesheet" href="/static/css/book-catalog.css">
   <link rel="icon" href="/static/img/icons/open-book.png" type="image/png">
 </head>
 
 <body>
-  {{if eq .Role "user" }}
+  {{ if eq .Role "user" }}
   {{ template "user-navbar" .}}
   {{ if gt .Messages 0 }}
   <script>
@@ -18,35 +21,37 @@
     messagelink.style.color = 'red';
   </script>
   {{ end }}
-  {{else}}
-    {{ template "admin-navbar" .}}
-    {{end}}
-    <h1>Book Catalog</h1>
-    <div id="books">
+  {{ else }}
+  {{ template "admin-navbar" .}}
+  {{ end }}
+  <main class="main-content">
+    <h1 class="main-title">Book Catalog</h1>
+    <div id="books" class="book-container">
       {{ if .Books }}
       {{ range .Books}}
-      {{ if gt .Book.Quantity  0 }}
+      {{ if gt .Book.Quantity 0 }}
       <div class="book">
-        <h2>
+        <h2 class="book-title">
           {{ .Book.Title }}
         </h2>
-        <p>Author:
+        <p class="book-author">Author:
           {{ .Book.Author }}
         </p>
-        <p>Genre:
+        <p class="book-genre">Genre:
           {{ .Book.Genre }}
         </p>
-        <p>
+        <p class="book-status">
           {{ .Status }}
         </p>
-        <button onclick=" viewBookDetails('{{ .Book.BookID }}'  )">View Details</button>
+        <button class="btn" onclick="viewBookDetails('{{ .Book.BookID.Int64 }}')">View Details</button>
       </div>
       {{ end }}
       {{ end }}
       {{ end }}
     </div>
+  </main>
+  <script src="/static/js/book-catalog.js"></script>
 </body>
-<script src="/static/js/book-catalog.js"></script>
 
 </html>
 

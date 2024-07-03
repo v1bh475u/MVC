@@ -1,49 +1,120 @@
-{{define "admin-navbar"}}
-<nav>
+{{ define "admin-navbar" }}
+<header>
+  <nav class="navbar">
+    <ul class="navbar__list">
+      <li class="navbar__item"><a href="/books" class="navbar__link">Catalog</a></li>
+      {{ if .Catalog }}
+      <li class="navbar__item">
+        <form action="/books" method="post" id="search-bar" class="navbar__form">
+          <input type="text" name="title" placeholder="Search for books" class="navbar__input">
+          <button type="submit" class="navbar__button">Search</button>
+        </form>
+      </li>
+      <li class="navbar__item">
+        <form action="/books" method="post" id="filter" class="navbar__form">
+          <label class="navbar__label">Filter by:</label>
+          <select name="genre" id="genre-select" class="navbar__select">
+            <option value="">All Genres</option>
+            {{ if .Genres}}
+            {{ range .Genres }}
+            <option value="{{ . }}">
+              {{ . }}
+            </option>
+            {{ end }}
+            {{ end }}
+          </select>
+          <select name="author" id="author-select" class="navbar__select">
+            <option value="">All Authors</option>
+            {{ if .Authors }}
+            {{ range .Authors}}
+            <option value="{{ . }}">
+              {{ . }}
+            </option>
+            {{ end }}
+            {{ end }}
+          </select>
+          <select name="user_status" class="navbar__select">
+            <option value="">All Books</option>
+            <option value="borrowed">Borrowed</option>
+            <option value="requested">Requested</option>
+          </select>
+          <button type="submit" class="navbar__button">Filter</button>
+        </form>
+      </li>
+      {{end}}
+      <li class="navbar__item"><a href="/book-management" class="navbar__link">Manage Books</a></li>
+      <li class="navbar__item"><a href="/requests" class="navbar__link">Requests</a></li>
+      <li class="navbar__item"><a href='/logout' class="navbar__link">Logout</a></li>
+    </ul>
+    <button class="hamburger" id="hamburger">
+
+      <span></span>
+
+      <span></span>
+
+      <span></span>
+
+    </button>
+
+  </nav>
+
+</header>
+
+
+<!-- Add a wrapper for the navigation menu -->
+
+<div class="nav-wrapper">
+
   <ul>
-    <li><a href="/books">Catalog</a></li>
-    {{ if .Catalog }}
-    <li>
-      <form action="/books" method="post" id="search-bar">
-        <input type="text" name="title" placeholder="Search for books">
-        <button type="submit">Search</button>
-      </form>
-    </li>
-    <li>
-      <form action="/books" method="post" id="filter">
-        <label>Filter by:</label>
-        <select name="genre" id="genre-select">
-          <option value="">All Genres</option>
-          {{ if .Genres}}
-          {{ range .Genres }}
-          <option value="{{ . }}">
-            {{ . }}
-          </option>
-          {{ end }}
-          {{ end }}
-        </select>
-        <select name="author" id="author-select">
-          <option value="">All Authors</option>
-          {{ if .Authors }}
-          {{ range .Authors}}
-          <option value="{{ . }}">
-            {{ . }}
-          </option>
-          {{ end }}
-          {{ end }}
-        </select>
-        <select name="user_status">
-          <option value="">All Books</option>
-          <option value="borrowed">Borrowed</option>
-          <option value="requested">Requested</option>
-        </select>
-        <button type="submit">Filter</button>
-      </form>
-    </li>
-    {{end}}
-    <li><a href="/book-management">Manage Books</a></li>
-    <li><a href="/requests">Requests</a></li>
-    <li><a href='/logout'>Logout</a></li>
-  </ul>
-</nav>
+    <ul class="navbar__list">
+      <li class="navbar__item"><a href="/books" class="navbar__link">Catalog</a></li>
+      {{ if .Catalog }}
+      <li class="navbar__item">
+        <form action="/books" method="post" id="search-bar" class="navbar__form">
+          <input type="text" name="title" placeholder="Search for books" class="navbar__input">
+          <button type="submit" class="navbar__button">Search</button>
+        </form>
+      </li>
+      <li class="navbar__item">
+        <form action="/books" method="post" id="filter" class="navbar__form">
+          <label class="navbar__label">Filter by:</label>
+          <select name="genre" id="genre-select" class="navbar__select">
+            <option value="">All Genres</option>
+            {{ if .Genres}}
+            {{ range .Genres }}
+            <option value="{{ . }}">
+              {{ . }}
+            </option>
+            {{ end }}
+            {{ end }}
+          </select>
+          <select name="author" id="author-select" class="navbar__select">
+            <option value="">All Authors</option>
+            {{ if .Authors }}
+            {{ range .Authors}}
+            <option value="{{ . }}">
+              {{ . }}
+            </option>
+            {{ end }}
+            {{ end }}
+          </select>
+          <select name="user_status" class="navbar__select">
+            <option value="">All Books</option>
+            <option value="borrowed">Borrowed</option>
+            <option value="requested">Requested</option>
+          </select>
+          <button type="submit" class="navbar__button">Filter</button>
+        </form>
+      </li>
+      {{end}}
+      <li class="navbar__item"><a href="/book-management" class="navbar__link">Manage Books</a></li>
+      <li class="navbar__item"><a href="/requests" class="navbar__link">Requests</a></li>
+      <li class="navbar__item"><a href='/logout' class="navbar__link">Logout</a></li>
+    </ul>
+
+</div>
+
+<link rel="stylesheet" href="/static/css/navbar.css">
+<script src="/static/js/navbar.js"></script>
+
 {{end}}

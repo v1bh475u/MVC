@@ -1,10 +1,14 @@
 {{ define "borrowing-history" }}
 <!DOCTYPE html>
+<html lang="en">
 
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Borrowing History</title>
   <link rel="stylesheet" type="text/css" href="/static/css/borrowing-history.css">
   <link rel="icon" href="/static/img/icons/open-book.png" type="image/png">
+
 </head>
 
 <body>
@@ -21,13 +25,13 @@
       {{ range .BorrowingHistory}}
       <tr>
         <td>
-          {{ .BookID }}
+          {{ .BookID.Int64 }}
         </td>
         <td>
           {{ .Title }}
         </td>
         <td>
-          {{ .Borrowed_date}}
+          {{ .Borrowed_date }}
         </td>
         <td>
           {{ .Returned_date }}
