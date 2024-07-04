@@ -2,3 +2,4 @@ config/.env
 .vscode/
 Kaw!_++Nyfum
 vendor/
+Makefile
