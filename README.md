@@ -12,7 +12,7 @@
 - Update the `.env` file with your database credentials.
 - Run `chmod +x ./cmd/startup.sh` to make the script executable.
 - Run `./cmd/startup.sh` to start the process of hosting the server and also add control for migrations.
-- Use the `Makefile` to complete the database. (**Note:** The databse is created completely after migration version `4` and `5` just adds some dummy data for testing. Version above `5` is for testing purposes only.) 
+- It uses the `Makefile` to complete the database. (**Note:** The databse is created completely after migration version `4` and `5` just adds some dummy data for testing. Version above `5` is for testing purposes only.) 
 - Makefile after startup.sh has following utilities:
     ```zsh
     make build
