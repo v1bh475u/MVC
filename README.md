@@ -17,3 +17,10 @@
     ```bash
     go run cmd/main.go
     ```
+- __Unit Test__
+    
+    The unit test is available for `InsertUser` function in `models` package.
+    To run the test use the following command from root directory:
+    ```zsh
+    go test ./pkg/models
+    ```

@@ -44,7 +44,7 @@ func InsertUser(user types.User) error {
 	insertUser := `INSERT INTO users (Username, Password, Role ) VALUES (?, ?, ?)`
 	_, err = db.Exec(insertUser, user.Username, user.Password, user.Role)
 	if err != nil {
-		fmt.Printf("Error inserting into database: %v", err)
+		fmt.Printf("Error inserting into database: %#v", err)
 		return err
 	}
 	return nil
