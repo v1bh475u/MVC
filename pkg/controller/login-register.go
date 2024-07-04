@@ -49,11 +49,11 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		Name:     "token",
 		Value:    token,
 		Path:     "/",
-		Domain:   "",
+		Domain:   "mvc.libmansys.local",
 		Expires:  time.Now().Add(time.Hour * 24),
-		Secure:   true,
+		Secure:   false,
 		HttpOnly: true,
-		SameSite: http.SameSiteLaxMode,
+		SameSite: http.SameSiteStrictMode,
 	})
 	http.Redirect(w, r, "/books", http.StatusSeeOther)
 	fmt.Println("Cookie set")
@@ -70,13 +70,19 @@ func Register(w http.ResponseWriter, r *http.Request) {
 	}
 	password := r.FormValue("password")
 	role := "user"
-	hashedPassword := utils.HashPassword(password)
+	hashedPassword, err := utils.HashPassword(password)
+	if err != nil {
+		t := views.RegisterPage()
+		message := "Error hashing password"
+		t.Execute(w, types.PageData{Message: message})
+		return
+	}
 	user = types.User{
 		Username: username,
 		Password: hashedPassword,
 		Role:     role,
 	}
-	err := models.InsertUser(user)
+	err = models.InsertUser(user)
 	if err != nil {
 		t := views.RegisterPage()
 		message := "Error inserting user"

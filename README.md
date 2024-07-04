@@ -1,4 +1,4 @@
-# Library Management System v1.3
+# Library Management System v1.4
  
  This is a simple library management system implemented in <span style="color:skyblue">Go</span>. It uses <span style="color:yellow">mysql</span> as the database. It has same features as the previous Library Management System implemented in <span style="color:green">node.js</span>. It is based on MVC architecture.
 
@@ -9,27 +9,37 @@
     go mod tidy
     cp ./config/.env.example ./config/.env
     ```
-
-
-- __Database Setup__
-    1. Run `mysql -u root -p < database/db.sql` from root directory.
-    2. Update the `config/.env` file with your database credentials.
-    3. Use the Makefile to create the database and tables. (Database is setup in form of migrations. So, to jump to the most stable model, enter `5` when asked for version)
-
-- __Running the server__
+- Update the `.env` file with your database credentials.
+- Run `chmod +x ./cmd/startup.sh` to make the script executable.
+- Run `./cmd/startup.sh` to start the process of hosting the server and also add control for migrations.
+- Use the `Makefile` to complete the database. (**Note:** The databse is created completely after migration version `4` and `5` just adds some dummy data for testing. Version above `5` is for testing purposes only.) 
+- Makefile after startup.sh has following utilities:
     ```zsh
-    go run cmd/main.go
+    make build
+    make run
+    make clean
+    make host
+    make migration_create
+    make migration_up
+    make migration_down
+    make migration_fix
     ```
-- __Unit Test__
-    
-    The unit test is available for `InsertUser` function in `models` package.
-    To run the test use the following command from root directory:
+- The `startup.sh` will make up the database upto version `5`.
+- Use `make host` to host the server.
+
+## Unit Test
+- The unit test is available for `InsertUser` function in `models` package.
+To run the test use the following command from root directory:
     ```zsh
     go test ./pkg/models
     ```
-- __Migration__
-
-    For migration testing, use the Makefile. The Makefile has the following commands:
+- Another unit test is available for `HashPassword` function in `utils` package.
+To run the test use the following command from root directory:
+    ```zsh
+    go test ./pkg/utils
+    ```
+## Migration
+- For migration testing, use the Makefile. The Makefile has the following commands:
     ```zsh
     make migration_create
     make migration_up
@@ -47,3 +57,4 @@
 - The entire system is based on MVC architecture.
 - Database is formed using migrations and hence can be easily updated to a new version.
 - The system is secure and uses JWT for authentication.
+- Run `make` to see the list of commands available.
