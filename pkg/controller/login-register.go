@@ -49,7 +49,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		Name:     "token",
 		Value:    token,
 		Path:     "/",
-		Domain:   "mvc.libmansys.local",
+		Domain:   "",
 		Expires:  time.Now().Add(time.Hour * 24),
 		Secure:   false,
 		HttpOnly: true,
@@ -69,6 +69,13 @@ func Register(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	password := r.FormValue("password")
+	confirmPassword := r.FormValue("confirmPassword")
+	if password != confirmPassword {
+		t := views.RegisterPage()
+		message := "Passwords do not match"
+		t.Execute(w, types.PageData{Message: message})
+		return
+	}
 	role := "user"
 	hashedPassword, err := utils.HashPassword(password)
 	if err != nil {
