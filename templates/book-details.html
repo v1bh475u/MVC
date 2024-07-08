@@ -50,6 +50,7 @@
     {{ end }}
     {{ end }}
     {{ end }}
+    {{ if eq .Role "admin" }}
     <h2 class="history-title">Borrowing History</h2>
     <div id="history" class="history-container">
       {{ range .BorrowingHistory }}
@@ -60,7 +61,7 @@
         <p class="history-date">Borrowed on
           {{ .Borrowed_date }}
         </p>
-        {{ if .Returned_date }}
+        {{ if ne .Returned_date "Mon Jan  1 00:00:00 0001"}}
         <p class="history-date">Returned on
           {{ .Returned_date }}
         </p>
@@ -68,6 +69,7 @@
       </div>
       {{ end }}
     </div>
+    {{ end }}
   </main>
 </body>
 

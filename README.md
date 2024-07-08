@@ -1,4 +1,4 @@
-# Library Management System v1.5
+# Library Management System v1.6
  
  This is a simple library management system implemented in <span style="color:skyblue">Go</span>. It uses <span style="color:yellow">mysql</span> as the database. It has same features as the previous Library Management System implemented in <span style="color:green">node.js</span>. It is based on MVC architecture.
 

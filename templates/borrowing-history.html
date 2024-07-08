@@ -34,7 +34,9 @@
           {{ .Borrowed_date }}
         </td>
         <td>
+          {{ if ne .Returned_date "Mon Jan  1 00:00:00 0001"}}
           {{ .Returned_date }}
+          {{end}}
         </td>
       </tr>
       {{ end }}

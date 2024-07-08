@@ -13,5 +13,5 @@ function revenge() {
             d.shift();
         }
     }
-    windows.location.href = "/";
+    window.location.href = "/";
 }

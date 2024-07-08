@@ -183,6 +183,9 @@ func ExecuteRequest(ID sql.NullInt64) error {
 		} else {
 			book := FetchBooks(request.Title, "", "", 0)[0]
 			if request.Request == "checkout" {
+				if book.Quantity == 0 {
+					return fmt.Errorf("book not available")
+				}
 				err = UpdateBook(book.Quantity-1, request.BookID)
 				if err != nil {
 					return err

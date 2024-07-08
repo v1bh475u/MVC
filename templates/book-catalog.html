@@ -29,7 +29,7 @@
     <div id="books" class="book-container">
       {{ if .Books }}
       {{ range .Books}}
-      {{ if gt .Book.Quantity 0 }}
+      {{ if or (gt .Book.Quantity 0) (eq .Status "Borrowed") }}
       <div class="book">
         <h2 class="book-title">
           {{ .Book.Title }}
@@ -42,6 +42,9 @@
         </p>
         <p class="book-status">
           {{ .Status }}
+        </p>
+        <p class="book-quantity">Quantity Available:
+          {{ .Book.Quantity }}
         </p>
         <button class="btn" onclick="viewBookDetails('{{ .Book.BookID.Int64 }}')">View Details</button>
       </div>

@@ -51,7 +51,7 @@ func UpdateBook(w http.ResponseWriter, r *http.Request) {
 		SysMessages(types.Message{Message: "Invalid quantity", Type: "Error"}, w, r)
 		return
 	}
-	err = models.UpdateBook(quantity, book.BookID)
+	err = models.UpdateBook(book.Quantity+quantity, book.BookID)
 	if err != nil {
 		SysMessages(types.Message{Message: "Error updating book", Type: "Error"}, w, r)
 		return

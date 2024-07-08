@@ -46,6 +46,11 @@ func PostRequests(w http.ResponseWriter, r *http.Request) {
 			err = models.ExecuteRequest(k)
 		}
 		if err != nil {
+			if err == fmt.Errorf("book not available") {
+				models.UpdateRequest("disapproved", "unseen", key)
+				SysMessages(types.Message{Message: "Book not available", Type: "Warning"}, w, r)
+				return
+			}
 			SysMessages(types.Message{Message: "Error executing request", Type: "Error"}, w, r)
 			return
 		}

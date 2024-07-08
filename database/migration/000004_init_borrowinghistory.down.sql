@@ -1,3 +1,3 @@
 SET FOREIGN_KEY_CHECKS=0;
-DROP IF EXISTS borrowing_history;
+DROP TABLE IF EXISTS borrowing_history;
 SET FOREIGN_KEY_CHECKS=1;

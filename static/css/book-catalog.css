@@ -56,7 +56,8 @@ body {
 
 .book-author,
 .book-genre,
-.book-status {
+.book-status,
+.book-quantity {
     margin-bottom: 0.5rem;
 }
 

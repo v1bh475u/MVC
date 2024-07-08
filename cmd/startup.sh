@@ -59,19 +59,19 @@ then
 else
 	mv Makefile.example Makefile
 	echo "
-	migration_up:
-			@read -p \"Enter amount by which you want to up the db: \" v; \\
-			migrate -path database/migration/ -database \"mysql://root:$password@tcp(localhost:3306)/lib_db?\" -verbose up	\$\$v
-	migration_down:
-			@read -p \"Enter amount by which you want to down the db: \" v; \\
-			migrate -path database/migration/ -database \"mysql://root:$password@tcp(localhost:3306)/lib_db?\" -verbose down \$\$v
-	migration_fix:
-			@read -p \"Enter version: \" v; \\
-			migrate -path database/migration/ -database \"mysql://root:$password@tcp(localhost:3306)/lib_db?\" force \$\$v
-	" >> Makefile
+migration_up:
+		@read -p \"Enter amount by which you want to up the db: \" v; \\
+		migrate -path database/migration/ -database \"mysql://root:$password@tcp(localhost:3306)/lib_db?\" -verbose up	\$\$v
+migration_down:
+		@read -p \"Enter amount by which you want to down the db: \" v; \\
+		migrate -path database/migration/ -database \"mysql://root:$password@tcp(localhost:3306)/lib_db?\" -verbose down \$\$v
+migration_fix:
+		@read -p \"Enter version: \" v; \\
+		migrate -path database/migration/ -database \"mysql://root:$password@tcp(localhost:3306)/lib_db?\" force \$\$v
+" >> Makefile
 	echo -e "Makefile created successfully\n"
-	echo 5 | make migration_up
 fi
+echo 5 | make migration_up
 echo -e "Please enter the default admin credentials(username will be admin)\n"
 echo "Password: "
 read -r -s pswd
