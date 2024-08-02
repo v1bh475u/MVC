@@ -23,7 +23,7 @@ func FetchRequests(username, request, title, status string, ID sql.NullInt64, Us
 	params := []interface{}{}
 	if ID.Valid && ID.Int64 != 0 {
 		conditions = append(conditions, `ID = ?`)
-		params = append(params, ID)
+		params = append(params, ID.Int64)
 	}
 	if username != "" {
 		conditions = append(conditions, `Username = ?`)
@@ -43,16 +43,18 @@ func FetchRequests(username, request, title, status string, ID sql.NullInt64, Us
 	}
 	if User {
 		conditions = append(conditions, `User_status = ?`)
-		params = append(params, "unseen")
+		params = append(params, types.UNSEEN)
 	}
 	if conditions != nil {
 		query += ` WHERE ` + strings.Join(conditions, ` AND `)
 	}
 	result, err := db.Query(query, params...)
 	if err != nil {
-		fmt.Printf("Error querying database: %v", err)
+		fmt.Printf("Error querying database: %v\n", err)
 		return nil
 	}
+	fmt.Printf("%v\n",query)
+	fmt.Printf("%v\n",params)
 	var requests []types.DRequest
 	for result.Next() {
 		var req types.DRequest
@@ -60,18 +62,19 @@ func FetchRequests(username, request, title, status string, ID sql.NullInt64, Us
 		var title sql.NullString
 		err := result.Scan(&req.ID, &req.Username, &req.BookID, &title, &req.Request, &req.Status, &req.User_status, &dateBytes)
 		if err != nil {
-			fmt.Printf("Error scanning database: %v", err)
+			fmt.Printf("Error scanning database: %v\n", err)
 			return nil
 		}
 		req.Title = title.String
 		date, err := time.Parse("2006-01-02", string(dateBytes))
 		if err != nil {
-			fmt.Printf("Error parsing date: %v", err)
+			fmt.Printf("Error parsing date: %v\n", err)
 			return nil
 		}
 		req.Date = date.Format("Mon Jan _2 15:04:05 2006")
 		requests = append(requests, req)
 	}
+	fmt.Printf("%v\n",requests)
 	return requests
 }
 
@@ -174,16 +177,17 @@ func ExecuteRequest(ID sql.NullInt64) error {
 	defer db.Close()
 
 	request := FetchRequests("", "", "", "", ID, false)[0]
-	if request.Status == "disapproved" {
+	if request.Status == types.DISAPPROVED {
 		return nil
 	}
-	if request.Status == "approved" {
+	if request.Status == types.APPROVED {
 		if request.Title == "" {
-			err = update_user(request.Username, "admin")
+			err = update_user(request.Username, types.ADMIN)
 		} else {
 			book := FetchBooks(request.Title, "", "", 0)[0]
-			if request.Request == "checkout" {
+			if request.Request == types.CHECKOUT {
 				if book.Quantity == 0 {
+					UpdateRequest(types.DISAPPROVED, types.UNSEEN, int(ID.Int64))
 					return fmt.Errorf("book not available")
 				}
 				err = UpdateBook(book.Quantity-1, request.BookID)
@@ -191,7 +195,7 @@ func ExecuteRequest(ID sql.NullInt64) error {
 					return err
 				}
 				err = InsertBorrowingHistory(types.BorrowingHistory{BookID: request.BookID, Title: request.Title, Username: request.Username, Borrowed_date: time.Now()})
-			} else if request.Request == "checkin" {
+			} else if request.Request == types.CHECKIN {
 				err = UpdateBook(book.Quantity+1, request.BookID)
 				if err != nil {
 					return err

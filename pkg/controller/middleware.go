@@ -6,6 +6,7 @@ import (
 
 	"github.com/v1bh475u/LibMan_MVC/pkg/models"
 	"github.com/v1bh475u/LibMan_MVC/pkg/utils"
+	"github.com/v1bh475u/LibMan_MVC/pkg/types"
 )
 
 func AuthMiddleware(next http.Handler) http.Handler {
@@ -46,10 +47,9 @@ func AdminMiddleware(next http.Handler) http.Handler {
 		}
 		user, err := models.FetchUser(username)
 		if err != nil {
-			//TODO: redirect to message page
 			return
 		}
-		if user.Role != "admin" {
+		if user.Role != types.ADMIN {
 			http.Error(w, "Unauthorized", http.StatusUnauthorized)
 			return
 		}

@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"net/http"
 	"strconv"
-
+	"fmt"
 	"github.com/v1bh475u/LibMan_MVC/pkg/models"
 	"github.com/v1bh475u/LibMan_MVC/pkg/types"
 	"github.com/v1bh475u/LibMan_MVC/pkg/views"
@@ -46,7 +46,8 @@ func UpdateBook(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	book := models.FetchBooks(title, "", "", 0)[0]
-	n_requests := n_requestedbooks(book.BookID)
+	n_requests := n_requestedbooks(title)
+	fmt.Printf("%v\n",n_requests)
 	if !isQuantityValid(quantity, book.Quantity, n_requests) {
 		SysMessages(types.Message{Message: "Invalid quantity", Type: "Error"}, w, r)
 		return
@@ -63,6 +64,6 @@ func isQuantityValid(quantity, curr_quantity, n_requests int) bool {
 	return quantity+curr_quantity-n_requests >= 0
 }
 
-func n_requestedbooks(BookID sql.NullInt64) int {
-	return len(models.FetchRequests("", "", "", "pending", BookID, false))
+func n_requestedbooks(title string) int {
+	return len(models.FetchRequests("", "", title, types.PENDING, sql.NullInt64{}, false))
 }

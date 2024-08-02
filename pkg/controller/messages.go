@@ -16,8 +16,8 @@ func Messages(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "/login", http.StatusSeeOther)
 		return
 	}
-	messages := models.FetchRequests(username, "", "", "approved", sql.NullInt64{}, true)
-	messages = append(messages, models.FetchRequests(username, "", "", "disapproved", sql.NullInt64{}, true)...)
+	messages := models.FetchRequests(username, "", "", types.APPROVED, sql.NullInt64{}, true)
+	messages = append(messages, models.FetchRequests(username, "", "", types.DISAPPROVED, sql.NullInt64{}, true)...)
 	updateMessages(messages)
 	t := views.Messages()
 	t.ExecuteTemplate(w, "messages", types.PageData{Messages: messages, Catalog: false})

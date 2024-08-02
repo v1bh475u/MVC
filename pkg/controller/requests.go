@@ -14,7 +14,7 @@ import (
 )
 
 func Requests(w http.ResponseWriter, r *http.Request) {
-	Requests := models.FetchRequests("", "", "", "pending", sql.NullInt64{}, false)
+	Requests := models.FetchRequests("", "", "", types.PENDING, sql.NullInt64{}, false)
 	t := views.Requests()
 	t.ExecuteTemplate(w, "requests", types.PageData{Messages: Requests, Catalog: false})
 }
@@ -36,18 +36,18 @@ func PostRequests(w http.ResponseWriter, r *http.Request) {
 	}
 	var err error
 	for key, value := range body {
-		err = models.UpdateRequest(value, "unseen", key)
+		err = models.UpdateRequest(value, types.UNSEEN, key)
 		if err != nil {
 			SysMessages(types.Message{Message: "Error updating request", Type: "Error"}, w, r)
 			return
 		}
-		if value == "approved" {
+		if value == types.APPROVED {
 			k := sql.NullInt64{Int64: int64(key), Valid: true}
 			err = models.ExecuteRequest(k)
 		}
 		if err != nil {
 			if err == fmt.Errorf("book not available") {
-				models.UpdateRequest("disapproved", "unseen", key)
+				models.UpdateRequest(types.DISAPPROVED, types.UNSEEN, key)
 				SysMessages(types.Message{Message: "Book not available", Type: "Warning"}, w, r)
 				return
 			}
@@ -64,16 +64,31 @@ func AdminRequest(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "/login", http.StatusSeeOther)
 		return
 	}
-	Requests := models.FetchRequests(username, "adminPrivs", "", "pending", sql.NullInt64{}, false)
+	borrowing_history:=models.FetchBorrowingHistory(username, "")
+
+	if anyBookBorrowed(borrowing_history) {
+		SysMessages(types.Message{Message: "You have borrowed books. Return them before requesting for admin privileges", Type: "Warning"}, w, r)
+		return
+	}
+	Requests := models.FetchRequests(username, types.ADMINPRIVS, "", types.PENDING, sql.NullInt64{}, false)
 	if isRequested(Requests) {
 		SysMessages(types.Message{Message: "You have already requested for admin privileges", Type: "Warning"}, w, r)
 		return
 	}
-	request := types.Request{Request: "adminPrivs", Status: "pending", User_status: "unseen", Username: username, Date: time.Now()}
+	request := types.Request{Request: types.ADMINPRIVS, Status: types.PENDING, User_status: types.UNSEEN, Username: username, Date: time.Now()}
 	err = models.InsertRequest(request)
 	if err != nil {
 		SysMessages(types.Message{Message: "Error submitting request", Type: "Error"}, w, r)
 		return
 	}
 	SysMessages(types.Message{Message: "Request submitted successfully", Type: "Info"}, w, r)
+}
+
+func anyBookBorrowed(borrowing_history []types.DBorrowingHistory) bool {
+	for _, history := range borrowing_history {
+		if history.Returned_date == "Mon Jan  1 00:00:00 0001" {
+			return true
+		}
+	}
+	return false
 }

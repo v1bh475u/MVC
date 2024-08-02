@@ -4,7 +4,21 @@ import (
 	"database/sql"
 	"time"
 )
-
+const (
+	ADMIN = "admin"
+	USER  = "user"
+	ADMINPRIVS = "adminPrivs"
+	PENDING = "pending"
+	APPROVED = "approved"
+	DISAPPROVED = "disapproved"
+	SEEN = "seen"
+	UNSEEN = "unseen"
+	CHECKOUT = "checkout"
+	CHECKIN = "checkin"
+	BORROWED = "borrowed"
+	REQUESTED = "requested"
+	AVAILABLE = "available"
+)
 type User struct {
 	ID       int
 	Username string
