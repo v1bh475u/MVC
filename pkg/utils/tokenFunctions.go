@@ -3,7 +3,7 @@ package utils
 import (
 	"os"
 	"time"
-
+	"fmt"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/v1bh475u/LibMan_MVC/pkg/types"
 )
@@ -29,7 +29,7 @@ func VerifyToken(tokenString string) (string, string, error) {
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		return []byte(secret_key), nil
 	})
-
+	fmt.Println(token)
 	if err != nil {
 		return "", "", err
 	}

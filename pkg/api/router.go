@@ -15,24 +15,23 @@ func StartApi() {
 
 	router.HandleFunc("/", controller.Home).Methods("GET")
 
-	//Login-Register routes
 
-	router.HandleFunc("/login", controller.Login).Methods("POST")
-	router.HandleFunc("/login", controller.LoginPage).Methods("GET")
-
-	router.HandleFunc("/register", controller.RegisterPage).Methods("GET")
-	router.HandleFunc("/register", controller.Register).Methods("POST")
-	router.HandleFunc("/logout", controller.Logout).Methods("GET")
 
 	//Catalog routes
-
 	GetBooks := http.HandlerFunc(controller.GetBooks)
 	router.Handle("/books", controller.AuthMiddleware(GetBooks)).Methods("GET")
 	PostBooks := http.HandlerFunc(controller.PostBooks)
 	router.Handle("/books", controller.AuthMiddleware(PostBooks)).Methods("POST")
 
-	//Book details routes
+	//Login-Register routes
+	LoginPage := http.HandlerFunc(controller.LoginPage)
+	router.HandleFunc("/login", controller.Login).Methods("POST")
+	router.Handle("/login", controller.LogonMiddleware(LoginPage)).Methods("GET")
+	router.HandleFunc("/register", controller.RegisterPage).Methods("GET")
+	router.HandleFunc("/register", controller.Register).Methods("POST")
+	router.HandleFunc("/logout", controller.Logout).Methods("GET")
 
+	//Book details routes
 	GetBook := http.HandlerFunc(controller.GetBook)
 	router.Handle("/books/{id}", controller.AuthMiddleware(GetBook)).Methods("GET")
 	BookRequest := http.HandlerFunc(controller.BookRequest)

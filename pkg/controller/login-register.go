@@ -22,9 +22,12 @@ func RegisterPage(w http.ResponseWriter, r *http.Request) {
 }
 
 func Login(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("Login")
 	username := r.FormValue("username")
 	password := r.FormValue("password")
+	fmt.Println(username, password)
 	user, _ := models.FetchUser(username)
+	fmt.Print("%v\n", user)
 	if user.Username != username {
 		t := views.LoginPage()
 		message := "Invalid Username"
