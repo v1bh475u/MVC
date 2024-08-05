@@ -75,6 +75,34 @@ func UpdateBook(Quantity int, ID sql.NullInt64) error {
 	return nil
 }
 
+func DeleteBook(ID sql.NullInt64) error {
+	fmt.Println("Deleting book")
+	db, err := connection()
+	if err != nil {
+		fmt.Printf("Error connecting to database: %v", err)
+		return err
+	}
+	defer db.Close()
+	ForeignKey:=`SET FOREIGN_KEY_CHECKS=0`
+	_, err = db.Exec(ForeignKey)
+	if err != nil {
+		fmt.Printf("Error updating database: %v", err)
+		return err
+	}
+	deleteBook := `DELETE FROM books WHERE BookID = ?`
+	_, err = db.Exec(deleteBook, ID)
+	if err != nil {
+		fmt.Printf("Error deleting from database: %v", err)
+		return err
+	}
+	ForeignKey=`SET FOREIGN_KEY_CHECKS=1`
+	_, err = db.Exec(ForeignKey)
+	if err != nil {
+		fmt.Printf("Error updating database: %v", err)
+		return err
+	}
+	return nil
+}
 func InsertBook(book types.Book) error {
 	fmt.Println("Inserting book")
 	db, err := connection()

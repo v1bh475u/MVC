@@ -61,6 +61,7 @@ func StartApi() {
 	router.Handle("/addbook", controller.AuthMiddleware(controller.AdminMiddleware(AddBook))).Methods("POST")
 	UpdateBook := http.HandlerFunc(controller.UpdateBook)
 	router.Handle("/updatebook", controller.AuthMiddleware(controller.AdminMiddleware(UpdateBook))).Methods("POST")
-
+	DeleteBook := http.HandlerFunc(controller.DeleteBook)
+	router.Handle("/deletebook", controller.AuthMiddleware(controller.AdminMiddleware(DeleteBook))).Methods("POST")
 	http.ListenAndServe(":8080", router)
 }

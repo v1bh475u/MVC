@@ -22,7 +22,7 @@
     </form>
   </div>
   <div class="container">
-    <p>For Deleting a book, just write -Quantity in the Quantity input. This will subtract the quantity that you enter from the book quantity.</p>
+    <p>Quantity entered will be added to existing quantity.</p>
     <form action="/updatebook" method="post" id="update">
       <select name="title" id="title" required>
         <option value="" disabled selected>Select Book</option>
@@ -35,6 +35,19 @@
       </select>
       <input type="text" name="quantity" id="quantity" required placeholder="Quantity to be Added or Removed">
       <button type="submit">Update Book</button>
+    </form>
+  </div>
+  <div class="container">
+    <form action="/deletebook" method="post" id="update">
+      <select name="title" id="title" required>
+        <option value="" disabled selected>Select Book</option>
+        {{ range .Books }}
+        <option value="{{ .Title }}">
+          {{ .Title }}
+        </option>
+        {{ end }}
+      </select>
+      <button type="submit">Delete Book</button>
     </form>
   </div>
 </body>

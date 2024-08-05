@@ -59,9 +59,34 @@ func UpdateBook(w http.ResponseWriter, r *http.Request) {
 	}
 	SysMessages(types.Message{Message: "Book updated successfully", Type: "Info"}, w, r)
 }
+func DeleteBook(w http.ResponseWriter, r *http.Request) {
+	title := r.FormValue("title")
+	book := models.FetchBooks(title, "", "", 0)[0]
+	book_history:=models.FetchBorrowingHistory("",title)
+	n_borrowedbooks:=0
+	for _, bh := range book_history {
+		if bh.Returned_date == "Mon Jan  1 00:00:00 0001" {
+			n_borrowedbooks++
+		}
+	}
+	if n_borrowedbooks > 0 {
+		SysMessages(types.Message{Message: "Book is borrowed. Cannot delete", Type: "Error"}, w, r)
+		return
+	}
+	requests:=models.FetchRequests("", "", title, types.PENDING, sql.NullInt64{}, false)
+	for _, request := range requests {
+		models.UpdateRequest(types.DISAPPROVED, types.UNSEEN, request.ID)
+	}
+	err := models.DeleteBook(book.BookID)
+	if err != nil {
+		SysMessages(types.Message{Message: "Error deleting book", Type: "Error"}, w, r)
+		return
+	}
+	SysMessages(types.Message{Message: "Book deleted successfully", Type: "Info"}, w, r)
+}
 
 func isQuantityValid(quantity, curr_quantity, n_requests int) bool {
-	return quantity+curr_quantity-n_requests >= 0
+	return quantity+curr_quantity-n_requests >= 0 && quantity >= 0
 }
 
 func n_requestedbooks(title string) int {

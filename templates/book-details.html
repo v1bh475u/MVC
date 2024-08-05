@@ -30,21 +30,21 @@
       {{ .Book.Quantity }}
     </p>
     {{ if eq .Role "user" }}
-    {{ if eq .Status "Available" }}
+    {{ if eq .Status "available" }}
     <form action="/checkout" method="POST" class="book-form">
       <input type="hidden" name="bookId" value="{{ .Book.BookID.Int64 }}">
       <input type="hidden" name="action" value="checkout">
       <button type="submit" class="btn">Checkout</button>
     </form>
     {{ else }}
-    {{ if eq .Status "Borrowed" }}
+    {{ if eq .Status "borrowed" }}
     <form action="/checkin" method="POST" class="book-form">
       <input type="hidden" name="bookId" value="{{ .Book.BookID.Int64 }}">
       <input type="hidden" name="action" value="checkin">
       <button type="submit" class="btn">Checkin</button>
     </form>
     {{ else }}
-    {{ if eq .Status "Requested" }}
+    {{ if eq .Status "requested" }}
     <p class="status-message">Already Requested</p>
     {{ end }}
     {{ end }}
@@ -61,7 +61,7 @@
         <p class="history-date">Borrowed on
           {{ .Borrowed_date }}
         </p>
-        {{ if ne .Returned_date "Mon Jan  1 00:00:00 0001"}}
+        {{ if ne .Returned_date "Mon Jan 1 00:00:00 0001"}}
         <p class="history-date">Returned on
           {{ .Returned_date }}
         </p>
