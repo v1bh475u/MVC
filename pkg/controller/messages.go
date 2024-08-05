@@ -25,6 +25,6 @@ func Messages(w http.ResponseWriter, r *http.Request) {
 
 func updateMessages(messages []types.DRequest) {
 	for _, message := range messages {
-		models.UpdateRequest("", "seen", message.ID)
+		models.UpdateRequest("", types.SEEN, message.ID)
 	}
 }

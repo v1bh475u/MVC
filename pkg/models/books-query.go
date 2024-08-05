@@ -9,7 +9,6 @@ import (
 )
 
 func FetchBooks(title, author, genre string, ID int) []types.Book {
-	fmt.Println("Fetching books")
 	db, err := connection()
 	if err != nil {
 		fmt.Printf("Error connecting to database: %v", err)
@@ -58,7 +57,6 @@ func FetchBooks(title, author, genre string, ID int) []types.Book {
 }
 
 func UpdateBook(Quantity int, ID sql.NullInt64) error {
-	fmt.Println("Updating book")
 	db, err := connection()
 	if err != nil {
 		fmt.Printf("Error connecting to database: %v", err)
@@ -76,7 +74,6 @@ func UpdateBook(Quantity int, ID sql.NullInt64) error {
 }
 
 func DeleteBook(ID sql.NullInt64) error {
-	fmt.Println("Deleting book")
 	db, err := connection()
 	if err != nil {
 		fmt.Printf("Error connecting to database: %v", err)
@@ -104,7 +101,6 @@ func DeleteBook(ID sql.NullInt64) error {
 	return nil
 }
 func InsertBook(book types.Book) error {
-	fmt.Println("Inserting book")
 	db, err := connection()
 	if err != nil {
 		fmt.Printf("Error connecting to database: %v", err)

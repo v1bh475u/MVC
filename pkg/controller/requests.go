@@ -26,7 +26,6 @@ func PostRequests(w http.ResponseWriter, r *http.Request) {
 	}
 	body := make(map[int]string)
 	for key, value := range r.PostForm {
-		fmt.Printf("key: %v, value: %v\n", key, value)
 		k, err := strconv.Atoi(key)
 		if err != nil {
 			SysMessages(types.Message{Message: "Error converting key to int", Type: "Error"}, w, r)

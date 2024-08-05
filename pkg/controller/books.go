@@ -51,7 +51,6 @@ func PostBooks(w http.ResponseWriter, r *http.Request) {
 func GetBook(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	bookid, err := strconv.Atoi(vars["id"])
-	fmt.Printf("Book ID: %d\n", bookid)
 	if err != nil {
 		http.Redirect(w, r, "/books", http.StatusSeeOther)
 		return

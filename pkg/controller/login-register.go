@@ -27,7 +27,6 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	user, _ := models.FetchUser(username)
 	if user.Username != username {
 		t := views.LoginPage()
-		fmt.Println("Invalid Username")
 		message := "Invalid Username"
 		t.Execute(w, types.PageData{Message: message})
 		return
@@ -96,6 +95,5 @@ func Register(w http.ResponseWriter, r *http.Request) {
 		t.Execute(w, types.PageData{Message: message})
 		return
 	}
-	fmt.Print("User inserted")
 	http.Redirect(w, r, "/login", http.StatusSeeOther)
 }

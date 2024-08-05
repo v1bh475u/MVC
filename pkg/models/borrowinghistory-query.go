@@ -10,7 +10,6 @@ import (
 )
 
 func FetchBorrowingHistory(username string, bookname string) []types.DBorrowingHistory {
-	fmt.Println("Fetching borrowing history")
 	db, err := connection()
 	if err != nil {
 		fmt.Printf("Error connecting to database: %v", err)
@@ -60,7 +59,6 @@ func FetchBorrowingHistory(username string, bookname string) []types.DBorrowingH
 }
 
 func InsertBorrowingHistory(bh types.BorrowingHistory) error {
-	fmt.Println("Inserting borrowing history")
 	db, err := connection()
 	if err != nil {
 		fmt.Printf("Error connecting to database: %v", err)
@@ -81,7 +79,6 @@ func InsertBorrowingHistory(bh types.BorrowingHistory) error {
 }
 
 func UpdateBorrowingHistory(ID sql.NullInt64, Returned_date time.Time, username string) error {
-	fmt.Println("Updating borrowing history")
 	db, err := connection()
 	if err != nil {
 		fmt.Printf("Error connecting to database: %v", err)

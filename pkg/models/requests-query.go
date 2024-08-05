@@ -10,7 +10,6 @@ import (
 )
 
 func FetchRequests(username, request, title, status string, ID sql.NullInt64, User bool) []types.DRequest {
-	fmt.Println("Fetching requests")
 	db, err := connection()
 	if err != nil {
 		fmt.Printf("Error connecting to database: %v", err)
@@ -53,8 +52,6 @@ func FetchRequests(username, request, title, status string, ID sql.NullInt64, Us
 		fmt.Printf("Error querying database: %v\n", err)
 		return nil
 	}
-	fmt.Printf("%v\n",query)
-	fmt.Printf("%v\n",params)
 	var requests []types.DRequest
 	for result.Next() {
 		var req types.DRequest
@@ -74,12 +71,10 @@ func FetchRequests(username, request, title, status string, ID sql.NullInt64, Us
 		req.Date = date.Format("Mon Jan _2 15:04:05 2006")
 		requests = append(requests, req)
 	}
-	fmt.Printf("%v\n",requests)
 	return requests
 }
 
 func InsertRequest(req types.Request) error {
-	fmt.Println("Inserting request")
 	db, err := connection()
 	if err != nil {
 		fmt.Printf("Error connecting to database: %v", err)
@@ -140,7 +135,6 @@ func InsertRequest(req types.Request) error {
 }
 
 func UpdateRequest(Status, User_status string, ID int) error {
-	fmt.Println("Updating request")
 	db, err := connection()
 	if err != nil {
 		fmt.Printf("Error connecting to database: %v", err)
@@ -168,7 +162,6 @@ func UpdateRequest(Status, User_status string, ID int) error {
 }
 
 func ExecuteRequest(ID sql.NullInt64) error {
-	fmt.Println("Executing request")
 	db, err := connection()
 	if err != nil {
 		fmt.Printf("Error connecting to database: %v", err)

@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"net/http"
 	"strconv"
-	"fmt"
 	"github.com/v1bh475u/LibMan_MVC/pkg/models"
 	"github.com/v1bh475u/LibMan_MVC/pkg/types"
 	"github.com/v1bh475u/LibMan_MVC/pkg/views"
@@ -46,9 +45,7 @@ func UpdateBook(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	book := models.FetchBooks(title, "", "", 0)[0]
-	n_requests := n_requestedbooks(title)
-	fmt.Printf("%v\n",n_requests)
-	if !isQuantityValid(quantity, book.Quantity, n_requests) {
+	if !isQuantityValid(quantity, book.Quantity) {
 		SysMessages(types.Message{Message: "Invalid quantity", Type: "Error"}, w, r)
 		return
 	}
@@ -59,6 +56,7 @@ func UpdateBook(w http.ResponseWriter, r *http.Request) {
 	}
 	SysMessages(types.Message{Message: "Book updated successfully", Type: "Info"}, w, r)
 }
+
 func DeleteBook(w http.ResponseWriter, r *http.Request) {
 	title := r.FormValue("title")
 	book := models.FetchBooks(title, "", "", 0)[0]
@@ -85,8 +83,8 @@ func DeleteBook(w http.ResponseWriter, r *http.Request) {
 	SysMessages(types.Message{Message: "Book deleted successfully", Type: "Info"}, w, r)
 }
 
-func isQuantityValid(quantity, curr_quantity, n_requests int) bool {
-	return quantity+curr_quantity-n_requests >= 0 && quantity >= 0
+func isQuantityValid(quantity, curr_quantity int) bool {
+	return quantity+curr_quantity >= 0
 }
 
 func n_requestedbooks(title string) int {
