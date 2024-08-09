@@ -14,7 +14,7 @@ import (
 )
 
 func dsn() string {
-	err := godotenv.Load("config/.env")
+	err := godotenv.Load()
 	if err != nil {
 		fmt.Printf("Error loading .env file. %v", err)
 	}
@@ -26,7 +26,9 @@ func dsn() string {
 }
 
 func connection() (*sql.DB, error) {
+	fmt.Printf("DSN: %s\n", dsn())
 	db, err := sql.Open("mysql", dsn())
+	fmt.Printf("DSN: %s\n", dsn())
 	if err != nil {
 		log.Printf("Error opening database: %v", err)
 		return nil, err
