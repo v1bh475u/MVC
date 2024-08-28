@@ -2,6 +2,7 @@ package controller
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 	"time"
 
@@ -26,7 +27,11 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	username := r.FormValue("username")
 	password := r.FormValue("password")
 	fmt.Println(username, password)
-	user, _ := models.FetchUser(username)
+	user, err := models.FetchUser(username)
+	if err != nil {
+		fmt.Println("Error fetching user")
+		log.Printf("Error fetching user: %v", err)
+	}
 	fmt.Print("%v\n", user)
 	if user.Username != username {
 		t := views.LoginPage()

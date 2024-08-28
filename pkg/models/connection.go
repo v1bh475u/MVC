@@ -14,7 +14,7 @@ import (
 )
 
 func dsn() string {
-	err := godotenv.Load("config/.env")
+	err := godotenv.Load()
 	if err != nil {
 		fmt.Printf("Error loading .env file. %v", err)
 	}
@@ -22,7 +22,8 @@ func dsn() string {
 	password := os.Getenv("DB_PASS")
 	dbname := os.Getenv("DB_NAME")
 	hostname := os.Getenv("DB_HOST")
-	return fmt.Sprintf("%s:%s@tcp(%s)/%s", username, password, hostname, dbname)
+	port := os.Getenv("DB_PORT")
+	return fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", username, password, hostname, port, dbname)
 }
 
 func connection() (*sql.DB, error) {

@@ -1,13 +1,14 @@
-# Library Management System v1.9
+# Library Management System v2.0
  
  This is a simple library management system implemented in <span style="color:skyblue">Go</span>. It uses <span style="color:yellow">mysql</span> as the database. It has same features as the previous Library Management System implemented in <span style="color:green">node.js</span>. It is based on MVC architecture.
 
- ## Setup
+ ## Setup 
+ ### Manual
  - Clone the repo. From root directory:
     ```zsh
     go mod vendor
     go mod tidy
-    cp ./config/.env.example ./config/.env
+    cp .env.example .env
     ```
 - Update the `.env` file with your database credentials.
 - Run `chmod +x ./cmd/startup.sh` to make the script executable.
@@ -28,6 +29,16 @@
 - It will also allow you to set default admin credentials.
 - For running the server on localhost, make sure that in `/pkg/controller/login-register.go` the `Domain` in `SetCookie` function is set to empty string or else the cookies will not be set. And for virtual host, set the `Domain` to the domain name (Default: `mvc.libmansys.com`).
 - Use `make host` to host the server.
+### Docker
+- Run the following command.
+    ```zsh
+        cp .env.example .env
+    ```
+- Change the variables as per your use.
+- Compose docker.
+    ```zsh
+        docker compose up --build
+    ```
 
 ## Unit Test
 - The unit test is available for `InsertUser` function in `models` package.
