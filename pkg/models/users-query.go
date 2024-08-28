@@ -1,16 +1,16 @@
 package models
 
 import (
-	"fmt"
+	"log"
 
 	"github.com/v1bh475u/LibMan_MVC/pkg/types"
 )
 
 func FetchUser(username string) (types.User, error) {
-	fmt.Println("Fetching user")
+	log.Println("Fetching user")
 	db, err := connection()
 	if err != nil {
-		fmt.Printf("Error connecting to database: %v", err)
+		log.Printf("Error connecting to database: %v", err)
 		return types.User{}, err
 	}
 	defer db.Close()
@@ -18,14 +18,14 @@ func FetchUser(username string) (types.User, error) {
 	getUser := `SELECT * FROM users WHERE username = ?`
 	result, err := db.Query(getUser, username)
 	if err != nil {
-		fmt.Printf("Error querying database: %v", err)
+		log.Printf("Error querying database: %v", err)
 		return types.User{}, err
 	}
 	var user types.User
 	for result.Next() {
 		err := result.Scan(&user.ID, &user.Username, &user.Password, &user.Role)
 		if err != nil {
-			fmt.Printf("Error scanning database: %v", err)
+			log.Printf("Error scanning database: %v", err)
 			return types.User{}, err
 		}
 	}
@@ -35,7 +35,7 @@ func FetchUser(username string) (types.User, error) {
 func InsertUser(user types.User) error {
 	db, err := connection()
 	if err != nil {
-		fmt.Printf("Error connecting to database: %v", err)
+		log.Printf("Error connecting to database: %v", err)
 		return err
 	}
 	defer db.Close()
@@ -43,7 +43,7 @@ func InsertUser(user types.User) error {
 	insertUser := `INSERT INTO users (Username, Password, Role ) VALUES (?, ?, ?)`
 	_, err = db.Exec(insertUser, user.Username, user.Password, user.Role)
 	if err != nil {
-		fmt.Printf("Error inserting into database: %#v", err)
+		log.Printf("Error inserting into database: %#v", err)
 		return err
 	}
 	return nil
@@ -52,7 +52,7 @@ func InsertUser(user types.User) error {
 func update_user(username, role string) error {
 	db, err := connection()
 	if err != nil {
-		fmt.Printf("Error connecting to database: %v", err)
+		log.Printf("Error connecting to database: %v", err)
 		return err
 	}
 	defer db.Close()
@@ -60,7 +60,7 @@ func update_user(username, role string) error {
 	updateUser := `UPDATE users SET Role = ? WHERE Username = ?`
 	_, err = db.Exec(updateUser, role, username)
 	if err != nil {
-		fmt.Printf("Error updating database: %v", err)
+		log.Printf("Error updating database: %v", err)
 		return err
 	}
 	return nil

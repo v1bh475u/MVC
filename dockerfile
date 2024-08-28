@@ -13,5 +13,6 @@ RUN go mod tidy
 COPY . .
 
 EXPOSE 8080
-
-CMD ["go", "run", "cmd/main.go"]
+RUN go build -o mvc cmd/main.go
+# RUN go run config/admincred.go
+CMD ["/app/mvc"]

@@ -1,55 +1,73 @@
-services:
-  db:
-    image: mysql:latest
-    volumes:
-            - ./database/db.sql:/docker-entrypoint-initdb.d/db.sql
-    ports:
-      - "3906:3306"
-    expose:
-      - "3906"
-    environment:
-     - "MYSQL_ROOT_PASSWORD=${DB_PASS}"
-    networks:
-      - libmansys
-    healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
-      retries: 3
-      interval: 5s
-      timeout: 15s
-    restart: always
-
-  migrate:
-    image: migrate/migrate
-    depends_on:
+    services:
       db:
-        condition: service_healthy
-    volumes:
-      - ./database/migration:/migration
-    networks:
-      - libmansys
-    command:
-      [
-        "-path",
-        "/migration",
-        "-database",
-        "mysql://root:${DB_PASS}@tcp(db:3306)/lib_db",
-        "up"
-      ]
+        image: mysql:latest
+        volumes:
+                - ./database/db.sql:/docker-entrypoint-initdb.d/db.sql
+        ports:
+          - "3906:3306"
+        expose:
+          - "3906"
+        environment:
+        - "MYSQL_ROOT_PASSWORD=${DB_PASS}"
+        - "ADMIN_PASS=${ADMIN_PASS}"
+        networks:
+          - libmansys
+        healthcheck:
+          test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+          retries: 3
+          interval: 5s
+          timeout: 15s
+        restart: always
 
-  libmansys:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    depends_on:
+      migrate:
+        image: migrate/migrate
+        depends_on:
+          db:
+            condition: service_healthy
+        volumes:
+          - ./database/migration:/migration
+        networks:
+          - libmansys
+        command:
+          [
+            "-path",
+            "/migration",
+            "-database",
+            "mysql://root:${DB_PASS}@tcp(db:3306)/lib_db",
+            "-verbose",
+            "up",
+            "5"
+          ]
+      defaultadmin:
+        build:
+          context: .
+          dockerfile: Dockerfile
+        command: go run config/admincred.go
+        depends_on:
+          migrate:
+            condition: service_completed_successfully
+        networks:
+          - libmansys
+      libmansys:
+        build:
+          context: .
+          dockerfile: Dockerfile
+        # stdin_open: true
+        # tty: true
+        depends_on:
+          db:
+            condition: service_healthy
+          migrate:
+            condition: service_completed_successfully
+          defaultadmin:
+            condition: service_completed_successfully
+        ports:
+          - "8080:8080"
+        networks:
+          - libmansys
+    volumes:
       db:
-        condition: service_healthy
-    ports:
-      - "8080:8080"
+      migrate:
     networks:
-      - libmansys
-volumes:
-  db:
-  migrate:
-networks:
-  libmansys:
-    driver: bridge
+      libmansys:
+        driver: bridge

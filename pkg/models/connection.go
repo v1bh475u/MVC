@@ -22,13 +22,12 @@ func dsn() string {
 	password := os.Getenv("DB_PASS")
 	dbname := os.Getenv("DB_NAME")
 	hostname := os.Getenv("DB_HOST")
-	return fmt.Sprintf("%s:%s@tcp(%s)/%s", username, password, hostname, dbname)
+	port := os.Getenv("DB_PORT")
+	return fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", username, password, hostname, port, dbname)
 }
 
 func connection() (*sql.DB, error) {
-	fmt.Printf("DSN: %s\n", dsn())
 	db, err := sql.Open("mysql", dsn())
-	fmt.Printf("DSN: %s\n", dsn())
 	if err != nil {
 		log.Printf("Error opening database: %v", err)
 		return nil, err

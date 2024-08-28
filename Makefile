@@ -33,11 +33,11 @@ clean:
 
 
 migration_up:
-		@read -p \"Enter amount by which you want to up the db: \" v; \\
-		migrate -path database/migration/ -database \"mysql://root:$(DB_PASS)@tcp(localhost:3306)/lib_db?\" -verbose up	\$\$v
+		@read -p \"Enter version by which you want to up the db: \" v; \\
+		migrate -path database/migration/ -database \"mysql://root:$(DB_PASS)@tcp(localhost:3306)/lib_db?\" -verbose up	$$v
 migration_down:
-		@read -p \"Enter amount by which you want to down the db: \" v; \\
-		migrate -path database/migration/ -database \"mysql://root:$(DB_PASS)@tcp(localhost:3306)/lib_db?\" -verbose down \$\$v
+		@read -p \"Enter version by which you want to down the db: \" v; \\
+		migrate -path database/migration/ -database \"mysql://root:$(DB_PASS)@tcp(localhost:3306)/lib_db?\" -verbose down $$v
 migration_fix:
 		@read -p \"Enter version: \" v; \\
-		migrate -path database/migration/ -database \"mysql://root:$(DB_PASS)@tcp(localhost:3306)/lib_db?\" force \$\$v
+		migrate -path database/migration/ -database \"mysql://root:$(DB_PASS)@tcp(localhost:3306)/lib_db?\" force $$v
